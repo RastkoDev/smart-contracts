@@ -1,0 +1,41 @@
+;; NOTE: The faucets are used only for public testing
+
+(load "../utils/init-key-const.repl")
+
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+
+(env-data { "init": true })
+(env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
+(load "faucet.pact")
+(commit-tx)
+(print "\nLoaded Faucet")
+
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+
+(test-capability (coin.COINBASE))
+(coin.coinbase (coin-faucet.get-faucet-account) (coin-faucet.create-gas-payer-guard) 1000000.0)
+
+(expect "correct balance" 1000000.0 (coin.get-balance (coin-faucet.get-faucet-account)))
+
+(commit-tx)
+
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(env-chain-data {"block-time": (time "2019-08-27T12:30:00Z")})
+
+(expect "correct balance" 1000.0  (coin.get-balance "alice"))
+(coin-faucet.request-coin "alice" 10.0)
+(expect "correct balance" 1010.0  (coin.get-balance "alice"))
+
+(commit-tx)
+
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(env-chain-data {"block-time": (time "2019-09-27T12:30:00Z")})
+
+(env-sigs [ { "key": bridge-keys.bob, "caps": [] } ])
+(coin-faucet.create-and-request-coin "bob" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bob") 50.0)
+(expect "correct balance" 1050.0 (coin.get-balance "bob"))
+(commit-tx)

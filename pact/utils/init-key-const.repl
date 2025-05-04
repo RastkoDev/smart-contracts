@@ -1,0 +1,156 @@
+(begin-tx)
+(module test-ns GOVERNANCE
+  (defcap GOVERNANCE () true)
+  (defconst NAMESPACE_GUARD (create-user-guard (succeed)))
+  (defun succeed () true)
+)
+
+(define-namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf" test-ns.NAMESPACE_GUARD test-ns.NAMESPACE_GUARD)
+(commit-tx)
+
+;; Load structures
+(load "./load-structs.repl")
+
+;; Load Kadena Coin-V5 contracts
+(load "./load-coin.repl")
+
+;; Load all interfaces 
+(load "./load-interfaces.repl")
+
+(begin-tx)
+(module bridge-keys GOVERNANCE
+  (defcap GOVERNANCE () true)
+  (defconst bridge "368820f80c324bbc7c2b0610688a7da43e39f91d118732671cd9c7500ff43cca")
+  (defconst treasury "6be2f485a7af75fedb4b7f153a903f7e6000ca4aa501179c91a2450b777bd2a7")
+  (defconst alice "3a9dd532d73dace195dbb64d1dba6572fb783d0fdd324685e32fbda2f89f99a6")
+  (defconst alice-principal "k:3a9dd532d73dace195dbb64d1dba6572fb783d0fdd324685e32fbda2f89f99a6")
+  (defconst bob "6b9dd532d73dace195dbba4d1dba65d2fb785d0fdd324685e32fbda2f89f99ff")
+  (defconst bob-principal "k:6b9dd532d73dace195dbba4d1dba65d2fb785d0fdd324685e32fbda2f89f99ff")
+  (defconst charly "93aa059ae40a81c152832af0d0aa9d104ae6d4a5f309f2f0720087c9cf5f88ac")
+)
+(commit-tx)
+
+;; Data used for configuration of the contracts
+(begin-tx)
+(module vdata GOVERNANCE
+    (defcap GOVERNANCE () true)
+    (defconst validator "0x6c414e7a15088023e28af44ad0e1d593671e4b15")
+    (defconst sloc "storagelocation")
+    (defconst va-sig "sig")
+)
+(commit-tx)
+
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+;  ; {"keys": ["94c35ab1bd70243ec670495077f7846373b4dc5e9779d7a6732b5ceb6fde059c"], "pred": "keys-all"}
+;  ; encoded base-64 eyJrZXlzIjogWyI5NGMzNWFiMWJkNzAyNDNlYzY3MDQ5NTA3N2Y3ODQ2MzczYjRkYzVlOTc3OWQ3YTY3MzJiNWNlYjZmZGUwNTljIl0sInByZWQiOiAia2V5cy1hbGwifQ==
+;  (print (hyperlane-encode-token-message {"recipient": "eyJrZXlzIjogWyI5NGMzNWFiMWJkNzAyNDNlYzY3MDQ5NTA3N2Y3ODQ2MzczYjRkYzVlOTc3OWQ3YTY3MzJiNWNlYjZmZGUwNTljIl0sInByZWQiOiAia2V5cy1hbGwifQ", "amount": 699000000000000000000.0, "chainId": "1"}))
+(module data GOVERNANCE
+    (use hyperlane-message)
+    (defcap GOVERNANCE () true)
+    (defconst nonce 15)
+    (defconst eth-domain 31337)
+    (defconst pol-domain 137)
+    (defconst kda-domain 626)
+    (defconst eth-router "AAAAAAAAAAAAAAAAS9NJkuCZTp08U8HM_lwuONkHM44")
+    (defconst eth-router-bis "AABAAAAAAAAAAAAAS9NJkuCZTp08U8HM_lwuONkHM44")
+
+    (defconst eth-recipient "0x4BD34992E0994E9d3c53c1CCfe5C2e38d907338e")
+    (defconst message:object{hyperlane-message} { "version": 1, "nonce": 1, "originDomain": 1, "sender": "", "destinationDomain": 1, "recipient": "", "messageBody": "" })
+    (defconst threshold 1)
+    (defconst id "id")
+
+    (defconst recipient "k:94c35ab1bd70243ec670495077f7846373b4dc5e9779d7a6732b5ceb6fde059c")
+    (defconst recipient-key "94c35ab1bd70243ec670495077f7846373b4dc5e9779d7a6732b5ceb6fde059c")
+    (defconst encoded-tm "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAl5JLcig4MAAAAAXsia2V5cyI6IFsiOTRjMzVhYjFiZDcwMjQzZWM2NzA0OTUwNzdmNzg0NjM3M2I0ZGM1ZTk3NzlkN2E2NzMyYjVjZWI2ZmRlMDU5YyJdLCJwcmVkIjogImtleXMtYWxsIn0")
+)
+(commit-tx)
+
+(begin-tx)
+;  (env-data { "alice-keyset": { "keys": [ bridge-keys.alice ], "pred": "keys-all" } })
+;  (print (read-keyset "alice-keyset"))
+;  ; {"keys": ["3a9dd532d73dace195dbb64d1dba6572fb783d0fdd324685e32fbda2f89f99a6"], "pred": "keys-all"}
+;  ; encoded base-64 eyJrZXlzIjogWyIzYTlkZDUzMmQ3M2RhY2UxOTVkYmI2NGQxZGJhNjU3MmZiNzgzZDBmZGQzMjQ2ODVlMzJmYmRhMmY4OWY5OWE2Il0sInByZWQiOiAia2V5cy1hbGwifQ==
+
+;  (print (hyperlane-encode-token-message {"recipient": "eyJrZXlzIjogWyIzYTlkZDUzMmQ3M2RhY2UxOTVkYmI2NGQxZGJhNjU3MmZiNzgzZDBmZGQzMjQ2ODVlMzJmYmRhMmY4OWY5OWE2Il0sInByZWQiOiAia2V5cy1hbGwifQ==", "amount": 15000000000000000000.0, "chainId": "0"}))
+;  (print (hyperlane-encode-token-message {"recipient": "eyJrZXlzIjogWyIzYTlkZDUzMmQ3M2RhY2UxOTVkYmI2NGQxZGJhNjU3MmZiNzgzZDBmZGQzMjQ2ODVlMzJmYmRhMmY4OWY5OWE2Il0sInByZWQiOiAia2V5cy1hbGwifQ==", "amount": 15000000000000000000.0, "chainId": "1"}))
+;  (print (hyperlane-encode-token-message {"recipient": "eyJrZXlzIjogWyIzYTlkZDUzMmQ3M2RhY2UxOTVkYmI2NGQxZGJhNjU3MmZiNzgzZDBmZGQzMjQ2ODVlMzJmYmRhMmY4OWY5OWE2Il0sInByZWQiOiAia2V5cy1hbGwifQ==", "amount": 15000000000000000000.0, "chainId": "20"}))
+(module encoded GOVERNANCE
+    (defcap GOVERNANCE () true)
+    (defconst message-chain0 "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0Cq0hs7cAAAAAHsia2V5cyI6IFsiM2E5ZGQ1MzJkNzNkYWNlMTk1ZGJiNjRkMWRiYTY1NzJmYjc4M2QwZmRkMzI0Njg1ZTMyZmJkYTJmODlmOTlhNiJdLCJwcmVkIjogImtleXMtYWxsIn0")
+    (defconst message-chain1 "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0Cq0hs7cAAAAAXsia2V5cyI6IFsiM2E5ZGQ1MzJkNzNkYWNlMTk1ZGJiNjRkMWRiYTY1NzJmYjc4M2QwZmRkMzI0Njg1ZTMyZmJkYTJmODlmOTlhNiJdLCJwcmVkIjogImtleXMtYWxsIn0")
+    (defconst message-chain20 "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA0Cq0hs7cAAAAFHsia2V5cyI6IFsiM2E5ZGQ1MzJkNzNkYWNlMTk1ZGJiNjRkMWRiYTY1NzJmYjc4M2QwZmRkMzI0Njg1ZTMyZmJkYTJmODlmOTlhNiJdLCJwcmVkIjogImtleXMtYWxsIn0")
+)
+(commit-tx)
+
+;; Define keysets for the bridge, the treasury, Alice, and Bob
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+
+(env-data { "bridge-admin-keyset": { "keys": [ bridge-keys.bridge ], "pred": "keys-all" } })
+(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.upgrade-admin" (read-keyset "bridge-admin-keyset"))
+
+(env-data { "bridge-admin-keyset": { "keys": [ bridge-keys.bridge ], "pred": "keys-all" } })
+(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin" (read-keyset "bridge-admin-keyset"))
+
+(env-data { "gas-oracle-admin-keyset": { "keys": [ bridge-keys.bridge ], "pred": "keys-all" } })
+(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.gas-oracle-admin" (read-keyset "gas-oracle-admin-keyset"))
+
+(env-data { "treasury-keyset": { "keys": [ bridge-keys.treasury ], "pred": "keys-all" } })
+(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.treasury" (read-keyset "treasury-keyset"))
+
+(env-data { "alice-keyset": { "keys": [ bridge-keys.alice ], "pred": "keys-all" } })
+(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.alice" (read-keyset "alice-keyset"))
+
+(env-data { "bob-keyset": { "keys": [ bridge-keys.bob ], "pred": "keys-all" } })
+(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bob" (read-keyset "bob-keyset"))
+
+(env-data { "charly-keyset": { "keys": [ bridge-keys.charly ], "pred": "keys-all" } })
+(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.charly" (read-keyset "charly-keyset"))
+
+(env-data { "recipient-keyset": { "keys": [ data.recipient-key ], "pred": "keys-all" } })
+(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.recipient" (read-keyset "recipient-keyset"))
+
+(commit-tx)
+
+;; Register all accounts with `coin` contracts
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(coin.create-account "admin" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+(coin.create-account "treasury" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.treasury"))
+(coin.create-account "alice" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.alice"))
+(coin.create-account "bob" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bob"))  
+(coin.create-account "charly" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.charly"))  
+(commit-tx)
+
+;; Fund the accounts
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(test-capability (coin.COINBASE))
+(coin.coinbase "admin" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin") 1000.0)
+(coin.coinbase "alice" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.alice") 1000.0)
+(coin.coinbase "bob" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bob") 1000.0)
+(coin.coinbase "charly" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.charly") 1000.0)
+(commit-tx)
+
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(let
+  (
+    (keys-guard:guard (at "recipient" (hyperlane-decode-token-message encoded.message-chain0)))
+  )
+  ;; Action needed for testing
+  (test-capability (coin.COINBASE))
+  (coin.coinbase bridge-keys.alice-principal keys-guard 1000.0)
+)
+(commit-tx)
+
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(env-data { "attacker-keyset": {"keys": ["deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"], "pred": "keys-all"} })
+(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.attacker" (read-keyset "attacker-keyset"))
+(coin.create-account "attacker" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.attacker"))
+(test-capability (coin.COINBASE))
+(coin.coinbase "attacker" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.attacker") 1000.0)
+(commit-tx)
+

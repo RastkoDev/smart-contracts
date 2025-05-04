@@ -1,0 +1,5 @@
+npx hardhat namespace ../../kinesis-deploy/tmp/artifacts/kadena-config.json ../../kinesis-deploy/tmp/artifacts/agent-config.json devnet
+npx hardhat deploy-core devnet
+npx hardhat gas-station ../../kinesis-deploy/tmp/artifacts/kadena-config.json ../../kinesis-deploy/tmp/artifacts/agent-config.json devnet
+npx hardhat config ../../kinesis-deploy/tmp/artifacts/core-deployment.json ../../kinesis-deploy/tmp/artifacts/agent-config.json ./scripts/utils/tokenObjectsEVM.json ./scripts/utils/tokenObjectsKDA.json devnet --network localhost
+npx hardhat deploy-warp ../../kinesis-deploy/tmp/artifacts/core-deployment.json ../../kinesis-deploy/tmp/artifacts/erc20.txt ../../kinesis-deploy/tmp/artifacts/agent-config.json ./scripts/utils/tokenObjectsEVM.json ./scripts/utils/tokenObjectsKDA.json devnet --network localhost

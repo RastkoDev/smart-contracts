@@ -1,0 +1,5 @@
+node_modules
+.pact-history
+.vscode
+.pc-history
+.DS_Store

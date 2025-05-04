@@ -1,0 +1,33 @@
+
+(load "../utils/init-key-const.repl")
+
+(begin-tx)
+(env-data { "init": true })
+(env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
+(load "merkle-tree-ism.pact")
+(commit-tx)
+(print "\nLoaded Merkle Tree ISM")
+
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(env-sigs [ { "key": bridge-keys.bridge, "caps": [ (merkle-tree-ism.ONLY_ADMIN) ] } ])
+(merkle-tree-ism.initialize ["alice" "charly"] 1)
+(commit-tx)
+
+;; validators-and-threshold
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(expect "Correct validators and threshold" (merkle-tree-ism.validators-and-threshold data.message) {"threshold": 1,"validators": ["alice" "charly"]} )
+(commit-tx)
+
+;; get-validators
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(expect "Correct validators" (merkle-tree-ism.get-validators data.message) ["alice" "charly"] )
+(commit-tx)
+
+;; get-threshold
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(expect "Correct threshold" (merkle-tree-ism.get-threshold data.message) 1 )
+(commit-tx)

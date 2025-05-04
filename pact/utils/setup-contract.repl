@@ -1,0 +1,28 @@
+
+(load "../utils/init-contract.repl")
+
+;; Let's set up all the necessary data for the contracts
+
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+
+;; Set up the GasOracle
+(env-sigs [ { "key": bridge-keys.bridge, "caps": [ (gas-oracle.ONLY_ORACLE_ADMIN) ] } ])
+(gas-oracle.set-remote-gas-data-configs [
+{
+    "domain": data.eth-domain,
+    "token-exchange-rate": 1.0,
+    "gas-price": 0.001
+}
+])
+
+(env-sigs [ { "key": bridge-keys.bridge, "caps": [ (validator-announce.ONLY_ADMIN) ] } ])
+(validator-announce.announce vdata.validator vdata.sloc vdata.va-sig)
+
+;; Set up the IGP
+(env-sigs [ { "key": bridge-keys.bridge, "caps": [ (igp.ONLY_ADMIN) ] } ])
+(igp.set-remote-gas-amount {"domain": data.eth-domain, "gas-amount": 1000.0})
+
+(commit-tx)
+
+

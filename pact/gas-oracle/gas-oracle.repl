@@ -1,0 +1,157 @@
+(load "../utils/init-key-const.repl")
+
+(begin-tx)
+(env-data { "init": true })
+(env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
+(load "gas-oracle.pact")
+(commit-tx)
+(print "\nLoaded Gas Oracle")
+
+;set-remote-gas-data: failure
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(env-sigs [ { "key": "default_key", "caps": [ (gas-oracle.ONLY_ORACLE_ADMIN) ] } ])
+(expect-failure "Can only be called by admin" 
+    (gas-oracle.set-remote-gas-data-configs [
+        {
+            "domain": 1,
+            "token-exchange-rate": 5.0,
+            "gas-price": 20.0
+        } 
+        {
+            "domain": 2,
+            "token-exchange-rate": 8.0,
+            "gas-price": 15.0
+        }]
+    )
+)
+(commit-tx)
+
+;set-remote-gas-data-configs: success
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(env-sigs [ { "key": bridge-keys.bridge, "caps": [ (gas-oracle.ONLY_ORACLE_ADMIN) ] } ])
+(gas-oracle.set-remote-gas-data-configs [
+    {
+        "domain": 1,
+        "token-exchange-rate": 5.0,
+        "gas-price": 20.0
+    } 
+    {
+        "domain": 2,
+        "token-exchange-rate": 8.0,
+        "gas-price": 15.0
+    }]
+)
+
+(let
+    (
+        (result:object{gas-oracle-iface.remote-gas-data} (gas-oracle.get-exchange-rate-and-gas-price 1))
+    )
+    (expect "Token Exchange Rate Set" 5.0 (at "token-exchange-rate" result))
+    (expect "Gas Price Set" 20.0 (at "gas-price" result))
+)
+
+(let
+    (
+        (result:object{gas-oracle-iface.remote-gas-data} (gas-oracle.get-exchange-rate-and-gas-price 2))
+    )
+    (expect "Token Exchange Rate Set" 8.0 (at "token-exchange-rate" result))
+    (expect "Gas Price Set" 15.0 (at "gas-price" result))
+)
+(commit-tx)
+
+;set-remote-gas-data-configs: success twice
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(env-sigs [ { "key": bridge-keys.bridge, "caps": [ (gas-oracle.ONLY_ORACLE_ADMIN) ] } ])
+(gas-oracle.set-remote-gas-data-configs [
+    {
+        "domain": 1,
+        "token-exchange-rate": 2.5,
+        "gas-price": 10.0
+    } 
+    {
+        "domain": 2,
+        "token-exchange-rate": 4.0,
+        "gas-price": 7.5
+    }]
+)
+
+(let
+    (
+        (result:object{gas-oracle-iface.remote-gas-data} (gas-oracle.get-exchange-rate-and-gas-price 1))
+    )
+    (expect "Token Exchange Rate Set" 2.5 (at "token-exchange-rate" result))
+    (expect "Gas Price Set" 10.0 (at "gas-price" result))
+)
+
+(let
+    (
+        (result:object{gas-oracle-iface.remote-gas-data} (gas-oracle.get-exchange-rate-and-gas-price 2))
+    )
+    (expect "Token Exchange Rate Set" 4.0 (at "token-exchange-rate" result))
+    (expect "Gas Price Set" 7.5 (at "gas-price" result))
+)
+(commit-tx)
+
+;set-remote-gas-data: failure
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(env-sigs [ { "key": "default_key", "caps": [ (gas-oracle.ONLY_ORACLE_ADMIN) ] } ])
+(expect-failure "Can only be called by admin" 
+    (gas-oracle.set-remote-gas-data 
+        {
+            "domain": 1,
+            "token-exchange-rate": 5.0,
+            "gas-price": 20.0
+        }
+    )
+)
+(commit-tx)
+
+;set-remote-gas-data: success
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(env-sigs [ { "key": bridge-keys.bridge, "caps": [ (gas-oracle.ONLY_ORACLE_ADMIN) ] } ])
+(expect "GasOracle sets gas data" true
+    (gas-oracle.set-remote-gas-data 
+        {
+            "domain": 10,
+            "token-exchange-rate": 40.0,
+            "gas-price": 110.0
+        }
+    )
+)
+
+(let
+    (
+        (result:object{gas-oracle-iface.remote-gas-data} (gas-oracle.get-exchange-rate-and-gas-price 10))
+    )
+    (expect "Token Exchange Rate Set" 40.0 (at "token-exchange-rate" result))
+    (expect "Gas Price Set" 110.0 (at "gas-price" result))
+)
+(commit-tx)
+
+;set-remote-gas-data: success twice
+(begin-tx)
+(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(env-sigs [ { "key": bridge-keys.bridge, "caps": [ (gas-oracle.ONLY_ORACLE_ADMIN) ] } ])
+(expect "GasOracle sets gas data" true
+    (gas-oracle.set-remote-gas-data 
+        {
+            "domain": 10,
+            "token-exchange-rate": 20.0,
+            "gas-price": 55.0
+        }
+    )
+)
+
+(let
+    (
+        (result:object{gas-oracle-iface.remote-gas-data} (gas-oracle.get-exchange-rate-and-gas-price 10))
+    )
+    (expect "Token Exchange Rate Set" 20.0 (at "token-exchange-rate" result))
+    (expect "Gas Price Set" 55.0 (at "gas-price" result))
+)
+(commit-tx)
