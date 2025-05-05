@@ -31,6 +31,16 @@ export const createNamedFile = async (
   return resultFile;
 };
 
+export const modifyNamespaceFile = async (file: string, namespace: string) => {
+  const namespaceRegExp = new RegExp(
+    "n_9b079bebc8a0d688e4b2f4279a114148d6760edf",
+    "g",
+  );
+  let resultFile = file.replaceAll(namespaceRegExp, namespace);
+
+  return resultFile;
+};
+
 async function main() {
   const colPath = path.join(
     __dirname,

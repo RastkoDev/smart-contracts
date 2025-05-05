@@ -1,3 +1,4 @@
+import path from "path";
 import {
   IClient,
   IKeyPair,
@@ -12,10 +13,14 @@ import {
   ICapability,
   IClientWithData,
   INetworks,
+  TxData,
   TxError,
 } from "./interfaces";
 import * as fs from "fs";
 import { KDA_NETWORKS } from "./constants";
+import { readFile } from "fs/promises";
+import { modifyNamespaceFile } from "../generator/generate-modules";
+import { getDeployedHash } from "./kadena-utils";
 
 export const submitSignedTx = async (
   client: IClientWithData,
@@ -215,6 +220,25 @@ export const upgradeModuleDirectly = async (
   return await submitUpgradeContract(client, sender, keyset, file);
 };
 
+export const verifyModuleDirectly = async (
+  client: IClientWithData,
+  namespace: string,
+  repoFile: string,
+  moduleName: string,
+) => {
+  const namespaceRepoFile = await modifyNamespaceFile(repoFile, namespace);
+  const repoHash: string = "";
+
+  const mainnetHash = (await getDeployedHash(
+    client,
+    namespace,
+    moduleName,
+  )) as unknown as TxData;
+
+  if (repoHash === mainnetHash.data) return "Verification successfull";
+  else return "Verification failed";
+};
+
 export const deployModule = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
@@ -233,6 +257,31 @@ export const upgradeModule = async (
 ) => {
   const file = (await fs.promises.readFile(fileName)).toString();
   return await submitUpgradeContract(client, sender, keyset, file);
+};
+
+export const verifyModule = async (
+  client: IClientWithData,
+  namespace: string,
+  moduleFolder: string,
+  moduleName: string,
+) => {
+  const folderPrefix = "../../../pact/";
+  const fileName = path.join(
+    __dirname,
+    folderPrefix + moduleFolder + "/" + moduleName + ".pact",
+  );
+  const repoFile = (await readFile(fileName)).toString();
+  const namespaceRepoFile = await modifyNamespaceFile(repoFile, namespace);
+  const repoHash: string = "";
+
+  const mainnetHash = (await getDeployedHash(
+    client,
+    namespace,
+    moduleName,
+  )) as unknown as TxData;
+
+  if (repoHash === mainnetHash.data) return "Verification successfull";
+  else return "Verification failed";
 };
 
 const signTx = async (

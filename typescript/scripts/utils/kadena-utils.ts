@@ -1,6 +1,7 @@
 import { PactNumber } from "@kadena/pactjs";
 import { IAccountWithKeys, ICapability, IClientWithData } from "./interfaces";
 import {
+  submitReadTx,
   submitSignedTx,
   submitSignedTxWithCap,
   submitSignedTxWithCapWithData,
@@ -183,4 +184,16 @@ export const fundGasStation = async (
   );
   console.log("\nFunding GasStation");
   console.log(result);
+};
+
+export const getDeployedHash = async (
+  client: IClientWithData,
+  namespace: string,
+  moduleName: string,
+) => {
+  const command = `(namespace "${namespace}")
+  (at "hash" (describe-module "${namespace}.${moduleName}"))`;
+
+  const result = await submitReadTx(client, command);
+  return result;
 };
