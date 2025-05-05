@@ -1,17 +1,37 @@
 name: Kinesis Bridge CI
 
 on:
+  pull_request:
+    branches:
+      - dev
+      - main
+      - mainnet
+    types: [opened, synchronize, reopened]
   push:
-    branches: [mainnet]
-  pull_request: 
+    branches:
+      - dev
+      - main
+      - mainnet
   workflow_dispatch:
 
 jobs:
-  test:
+  test-solidity:
+    name: Test EVM smart contracts
     runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v4
-
+      - name: Install packages
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18.x"
+      - name: Run tests
+        run: npx hardhat test
+        working-directory: ./typescript
+  test-pact:
+    name: Test KDA smart contracts
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
       - name: Install Pact
         run: |
           PACT_VERSION="5.1"
@@ -19,10 +39,7 @@ jobs:
           mkdir -p .bin
           tar -xvzf pact-$PACT_VERSION-linux-x64.tar.gz -C .bin ./pact
           chmod +x .bin/pact
-
       - name: Add Pact to PATH
         run: echo "PATH=$PATH:$GITHUB_WORKSPACE/.bin" >> $GITHUB_ENV
-
       - name: Run tests
-        working-directory: contracts
         run: bin/bash ./shell/ci.sh

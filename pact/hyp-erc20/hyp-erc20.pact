@@ -4,26 +4,20 @@
 
 (module hyp-erc20 GOVERNANCE
   (implements fungible-v2)
-
   (implements router-iface)
 
   ;; Imports
   (use hyperlane-message)
-
   (use token-message)
-
   (use router-iface)
   
   ;; Tables
   (deftable accounts:{fungible-v2.account-details})
-
   (deftable routers:{router-address})
 
   ;; Capabilities
   (defcap GOVERNANCE () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.upgrade-admin"))
-
   (defcap ONLY_ADMIN () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
-
   (defcap INTERNAL () true)
 
   (defcap TRANSFER_REMOTE:bool 
@@ -52,16 +46,6 @@
   )
 
   ;; Events
-  (defcap SENT_TRANSFER_REMOTE
-    (
-      destination:integer
-      recipient:string
-      amount:decimal
-    )
-    @doc "Emitted on `transferRemote` when a transfer message is dispatched"
-    @event true
-  )
-
   (defcap RECEIVED_TRANSFER_REMOTE
     (
       origin:integer
@@ -72,15 +56,6 @@
     @event true
   )
 
-  (defcap DESTINATION_GAS_SET
-    (
-      domain:integer
-      gas:decimal
-    )
-    @doc "Emitted when a domain's destination gas is set."
-    @event true
-  )
-  
   (defun precision:integer () 18)
 
   (defun get-adjusted-amount:decimal (amount:decimal) 
@@ -208,7 +183,7 @@
         (yield { "receiver": receiver, "receiver-guard": receiver-guard, "amount": amount } target-chain)
       )
     )
-
+    
     (step
       (resume { "receiver" := receiver, "receiver-guard" := receiver-guard, "amount" := amount }
         (with-capability (INTERNAL)
@@ -225,12 +200,15 @@
     (enforce (!= receiver "") "Receiver cannot be empty.")
     (enforce-unit amount)
     (enforce-guard (at 'guard (read accounts sender)))
-    (enforce (> amount 0.0) "Transfer must be positive."))
+    (enforce (> amount 0.0) "Transfer must be positive.")
+  )
 
   (defun TRANSFER-mgr:decimal (managed:decimal requested:decimal)
     (let ((balance (- managed requested)))
       (enforce (>= balance 0.0) (format "TRANSFER exceeded for balance {}" [managed]))
-      balance))
+      balance
+    )
+  )
 
   (defun transfer:string (sender:string receiver:string amount:decimal)
     @model
@@ -238,23 +216,30 @@
         (property (> amount 0.0))
         (property (!= sender receiver))
       ]
-
+    (enforce (> amount 0.0) "transfer amount must be positive")
+    (validate-account sender)
+    (validate-account receiver)
     (with-capability (TRANSFER sender receiver amount)
       (with-read accounts sender { "balance" := sender-balance }
         (enforce (<= amount sender-balance) "Insufficient funds.")
         (update accounts sender { "balance": (- sender-balance amount) }))
 
       (with-read accounts receiver { "balance" := receiver-balance }
-        (update accounts receiver { "balance": (+ receiver-balance amount) }))))
+        (update accounts receiver { "balance": (+ receiver-balance amount) })
+      )
+    )
+  )
 
   (defun transfer-create:string (sender:string receiver:string receiver-guard:guard amount:decimal)
     @model [ (property (= 0.0 (column-delta accounts "balance"))) ]
-
+    (enforce (> amount 0.0) "transfer amount must be positive")
+    (validate-account sender)
+    (validate-account receiver)
     (with-capability (TRANSFER sender receiver amount)
       (with-read accounts sender { "balance" := sender-balance }
         (enforce (<= amount sender-balance) "Insufficient funds.")
-        (update accounts sender { "balance": (- sender-balance amount) }))
-
+        (update accounts sender { "balance": (- sender-balance amount) })
+      )
       (with-default-read accounts receiver
         { "balance": 0.0, "guard": receiver-guard }
         { "balance" := receiver-balance, "guard" := existing-guard }
@@ -263,8 +248,11 @@
           { "balance": (+ receiver-balance amount)
           , "guard": receiver-guard
           , "account": receiver
-          }))))
-
+          }
+        )
+      )
+    )
+  )
 
   (defun get-balance:decimal (account:string)
     (enforce (!= account "") "Account name cannot be empty.")
@@ -281,6 +269,36 @@
   (defun enforce-unit:bool (amount:decimal)
     (enforce (>= amount 0.0) "Unit cannot be non-positive.")
     (enforce (= amount (floor amount (precision))) "Amounts cannot exceed precision.")
+  )
+
+  (defun validate-account (account:string)
+    @doc "Enforce that an account name conforms to the coin contract \
+         \minimum and maximum length requirements, as well as the    \
+         \latin-1 character set."
+
+    (enforce
+      (is-charset CHARSET_LATIN1 account)
+      (format
+        "Account does not conform to the coin contract charset: {}"
+        [account]
+      )
+    )
+    (let ((account-length (length account)))
+      (enforce
+        (>= account-length 3)
+        (format
+          "Account name does not conform to the min length requirement: {}"
+          [account]
+        )
+      )
+      (enforce
+        (<= account-length 256)
+        (format
+          "Account name does not conform to the max length requirement: {}"
+          [account]
+        )
+      )
+    )
   )
 
   (defun create-account:string (account:string guard:guard)
@@ -301,13 +319,7 @@
       "Guard rotation for principal accounts not-supported")       
   )
 
-  (defcap TRANSFER_XCHAIN:bool
-    ( sender:string
-      receiver:string
-      amount:decimal
-      target-chain:string
-    )
-
+  (defcap TRANSFER_XCHAIN:bool (sender:string receiver:string amount:decimal target-chain:string)
     @managed amount TRANSFER_XCHAIN-mgr
     (enforce-unit amount)
     (enforce (> amount 0.0) "Cross-chain transfers require a positive amount")
@@ -318,11 +330,7 @@
     (enforce-guard (at 'guard (read accounts sender)))
   )
 
-  (defun TRANSFER_XCHAIN-mgr:decimal
-    ( managed:decimal
-      requested:decimal
-    )
-
+  (defun TRANSFER_XCHAIN-mgr:decimal (managed:decimal requested:decimal)
     (enforce (>= managed requested)
       (format "TRANSFER_XCHAIN exceeded for balance {}" [managed]))
     0.0
@@ -348,10 +356,15 @@
                 { "receiver": receiver
                 , "receiver-guard": receiver-guard
                 , "amount": amount
-                }))
-            payload)
-          target-chain)))
-
+                })
+            )
+            payload
+          )
+          target-chain
+        )
+      )
+    )
+    
     (step
       (resume { "receiver" := receiver, "receiver-guard" := receiver-guard, "amount" := amount }
         (with-default-read accounts receiver
@@ -362,7 +375,12 @@
             { "balance": (+ receiver-balance amount)
             , "guard": receiver-guard
             , "account": receiver
-            })))))
+            }
+          )
+        )
+      )
+    )
+  )
 )
 
 (if (read-msg "init")
