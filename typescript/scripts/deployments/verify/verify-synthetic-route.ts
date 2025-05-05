@@ -1,5 +1,5 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { getClientDatas } from "../../utils/constants";
+import { ba_account, getClientDatas, ua_account } from "../../utils/constants";
 import { verifyHypERC20Synth } from "./verify-warp-module";
 
 export const verifySyntheticWarpRoute = async (
@@ -17,7 +17,7 @@ export const verifySyntheticWarpRoute = async (
 
   const erc20Collateral = await hre.viem.getContractAt(
     "ERC20Collateral" as string,
-    tokenAddressEVM,
+    tokenAddressEVM as `0x${string}`,
   );
   const tokenSymbolEVM = await erc20Collateral.read.symbol();
   const tokenSymbolKDA = `kb-${tokenSymbolEVM}`;
@@ -26,6 +26,8 @@ export const verifySyntheticWarpRoute = async (
   for (let i: number = 0; i < clientDatas.length; i++) {
     promises[i] = verifyHypERC20Synth(
       clientDatas[i],
+      ba_account,
+      ua_account,
       tokenSymbolKDA,
       (await erc20Collateral.read.decimals()) as number,
     );

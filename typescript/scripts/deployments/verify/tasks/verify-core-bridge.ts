@@ -1,10 +1,12 @@
 import { task } from "hardhat/config";
-import { getClientDatas } from "../../../utils/constants";
+import {
+  ba_account,
+  getClientDatas,
+  ua_account,
+} from "../../../utils/constants";
 import {
   verifyGasOracle,
   verifyGasStation,
-  verifyGuards,
-  verifyGuards1,
   verifyIGP,
   verifyISM,
   verifyISMRouting,
@@ -25,52 +27,50 @@ task("verify-core", "Verify Core Bridge")
     );
 
     for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = verifyGasOracle(clientDatas[i]);
+      promises[i] = verifyGasOracle(clientDatas[i], ba_account, ua_account);
     }
     await Promise.all(promises);
 
     for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = verifyValidatorAnnounce(clientDatas[i]);
+      promises[i] = verifyValidatorAnnounce(
+        clientDatas[i],
+        ba_account,
+        ua_account,
+      );
     }
     await Promise.all(promises);
 
     for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = verifyISM(clientDatas[i]);
+      promises[i] = verifyISM(clientDatas[i], ba_account, ua_account);
     }
     await Promise.all(promises);
 
     for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = verifyISMRouting(clientDatas[i]);
+      promises[i] = verifyISMRouting(clientDatas[i], ba_account, ua_account);
     }
     await Promise.all(promises);
 
     for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = verifyIGP(clientDatas[i]);
+      promises[i] = verifyIGP(clientDatas[i], ba_account, ua_account);
     }
     await Promise.all(promises);
 
     for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = verifyMailbox(clientDatas[i]);
+      promises[i] = verifyMailbox(clientDatas[i], ba_account, ua_account);
     }
     await Promise.all(promises);
 
     for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = verifyMerkleTreeHook(clientDatas[i]);
+      promises[i] = verifyMerkleTreeHook(
+        clientDatas[i],
+        ba_account,
+        ua_account,
+      );
     }
     await Promise.all(promises);
 
     for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = verifyGuards(clientDatas[i]);
-    }
-    await Promise.all(promises);
-
-    for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = verifyGuards1(clientDatas[i]);
-    }
-    await Promise.all(promises);
-
-    for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = verifyGasStation(clientDatas[i]);
+      promises[i] = verifyGasStation(clientDatas[i], ba_account, ua_account);
     }
     await Promise.all(promises);
   });

@@ -1,5 +1,5 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { getClientDatas } from "../../utils/constants";
+import { ba_account, getClientDatas, ua_account } from "../../utils/constants";
 import { verifyHypERC20Coll } from "./verify-warp-module";
 
 export const verifyCollateralWarpRoute = async (
@@ -17,8 +17,10 @@ export const verifyCollateralWarpRoute = async (
   for (let i: number = 0; i < clientDatas.length; i++) {
     promises[i] = verifyHypERC20Coll(
       clientDatas[i],
+      ba_account,
+      ua_account,
       tokenSymbolKDA,
-      tokenPrecisionKDA,
+      tokenPrecisionKDA as number,
     );
   }
   await Promise.all(promises);

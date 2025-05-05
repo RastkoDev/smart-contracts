@@ -1,4 +1,4 @@
-import { IClientWithData } from "../../utils/interfaces";
+import { IAccountWithKeys, IClientWithData } from "../../utils/interfaces";
 import { verifyModuleDirectly } from "../../utils/submit-tx";
 import {
   createNamedFile,
@@ -8,6 +8,8 @@ import {
 
 export const verifyHypERC20Synth = async (
   client: IClientWithData,
+  sender: IAccountWithKeys,
+  keyset: IAccountWithKeys,
   name: string,
   precision: number,
 ) => {
@@ -17,6 +19,8 @@ export const verifyHypERC20Synth = async (
 
   const result = await verifyModuleDirectly(
     client,
+    sender,
+    keyset,
     mainnetNamespace,
     resultSyn,
     name,
@@ -27,6 +31,8 @@ export const verifyHypERC20Synth = async (
 
 export const verifyHypERC20Coll = async (
   client: IClientWithData,
+  sender: IAccountWithKeys,
+  keyset: IAccountWithKeys,
   name: string,
   precision: number,
 ) => {
@@ -36,6 +42,8 @@ export const verifyHypERC20Coll = async (
 
   const result = await verifyModuleDirectly(
     client,
+    sender,
+    keyset,
     mainnetNamespace,
     resultCol,
     name,

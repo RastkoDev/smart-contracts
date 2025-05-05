@@ -186,6 +186,48 @@ export const submitUpgradeContract = async (
   return signTxSeveralSigners(client.client, [sender.keys, keyset.keys], tx);
 };
 
+export const submitVerifyContract = async (
+  client: IClientWithData,
+  sender: IAccountWithKeys,
+  keyset: IAccountWithKeys,
+  command: string,
+) => {
+  const capabilities: ICapability[] = [
+    // { name: "coin.GAS" },
+    // { name: "mock.GOVERNANCE" },
+  ];
+
+  const tx = Pact.builder
+    .execution(command)
+    .addSigner(sender.keys.publicKey, (withCapability) => {
+      return capabilities.map((obj) =>
+        obj.args
+          ? withCapability(obj.name, ...obj.args)
+          : withCapability(obj.name),
+      );
+    })
+    .addSigner(keyset.keys.publicKey, (withCapability) => {
+      return capabilities.map((obj) =>
+        obj.args
+          ? withCapability(obj.name, ...obj.args)
+          : withCapability(obj.name),
+      );
+    })
+    .addKeyset(sender.keysetName, "keys-all", sender.keys.publicKey)
+    .addKeyset(keyset.keysetName, "keys-all", keyset.keys.publicKey)
+    .addData("init", false)
+    .addData("upgrade", true)
+    .setMeta({
+      senderAccount: sender.keysetName,
+      chainId: client.chainId as ChainId,
+      gasLimit: 150000,
+    })
+    .setNetworkId(KDA_NETWORKS[client.phase as keyof INetworks])
+    .createTransaction();
+
+  return resultTx(client.client, [sender.keys, keyset.keys], tx);
+};
+
 export const submitReadTx = async (
   client: IClientWithData,
   commmand: string,
@@ -222,20 +264,31 @@ export const upgradeModuleDirectly = async (
 
 export const verifyModuleDirectly = async (
   client: IClientWithData,
+  sender: IAccountWithKeys,
+  keyset: IAccountWithKeys,
   namespace: string,
   repoFile: string,
   moduleName: string,
 ) => {
-  const namespaceRepoFile = await modifyNamespaceFile(repoFile, namespace);
-  const repoHash: string = "";
-
-  const mainnetHash = (await getDeployedHash(
+  let namespaceRepoFile = await modifyNamespaceFile(repoFile, namespace);
+  const index = namespaceRepoFile.indexOf('(if (read-msg "init")');
+  if (index !== -1) {
+    namespaceRepoFile = namespaceRepoFile.slice(0, index);
+  }
+  const submitTx = (await submitVerifyContract(
     client,
-    namespace,
-    moduleName,
+    sender,
+    keyset,
+    namespaceRepoFile,
   )) as unknown as TxData;
+  const array = submitTx.data.split(" ");
+  const repoHash = array[array.length - 1];
 
-  if (repoHash === mainnetHash.data) return "Verification successfull";
+  const mainnetHash = (
+    (await getDeployedHash(client, namespace, moduleName)) as unknown as TxData
+  ).data;
+
+  if (repoHash === mainnetHash) return "Verification successfull";
   else return "Verification failed";
 };
 
@@ -261,6 +314,8 @@ export const upgradeModule = async (
 
 export const verifyModule = async (
   client: IClientWithData,
+  sender: IAccountWithKeys,
+  keyset: IAccountWithKeys,
   namespace: string,
   moduleFolder: string,
   moduleName: string,
@@ -271,16 +326,25 @@ export const verifyModule = async (
     folderPrefix + moduleFolder + "/" + moduleName + ".pact",
   );
   const repoFile = (await readFile(fileName)).toString();
-  const namespaceRepoFile = await modifyNamespaceFile(repoFile, namespace);
-  const repoHash: string = "";
-
-  const mainnetHash = (await getDeployedHash(
+  let namespaceRepoFile = await modifyNamespaceFile(repoFile, namespace);
+  const index = namespaceRepoFile.indexOf('(if (read-msg "init")');
+  if (index !== -1) {
+    namespaceRepoFile = namespaceRepoFile.slice(0, index);
+  }
+  const submitTx = (await submitVerifyContract(
     client,
-    namespace,
-    moduleName,
+    sender,
+    keyset,
+    namespaceRepoFile,
   )) as unknown as TxData;
+  const array = submitTx.data.split(" ");
+  const repoHash = array[array.length - 1];
 
-  if (repoHash === mainnetHash.data) return "Verification successfull";
+  const mainnetHash = (
+    (await getDeployedHash(client, namespace, moduleName)) as unknown as TxData
+  ).data;
+
+  if (repoHash === mainnetHash) return "Verification successfull";
   else return "Verification failed";
 };
 
@@ -316,4 +380,20 @@ const signTxSeveralSigners = async (
     return { status: "failure", message: error.message };
   }
   return listen.result;
+};
+
+const resultTx = async (
+  client: IClient,
+  keys: IKeyPair[],
+  tx: IUnsignedCommand,
+) => {
+  const sign = createSignWithKeypair(keys);
+  const signedTx = (await sign(tx)) as ICommand;
+  const signedResult = await client.preflight(signedTx);
+
+  if (signedResult.result.status == "failure") {
+    const error = signedResult.result.error as unknown as TxError;
+    return { status: "failure", message: error.message };
+  }
+  return signedResult.result;
 };

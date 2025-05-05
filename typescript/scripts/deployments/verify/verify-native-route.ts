@@ -1,4 +1,4 @@
-import { getClientDatas } from "../../utils/constants";
+import { ba_account, getClientDatas, ua_account } from "../../utils/constants";
 import { verifyHypERC20Synth } from "./verify-warp-module";
 
 export const verifyNativeWarpRoute = async (
@@ -14,6 +14,8 @@ export const verifyNativeWarpRoute = async (
   for (let i: number = 0; i < clientDatas.length; i++) {
     promises[i] = verifyHypERC20Synth(
       clientDatas[i],
+      ba_account,
+      ua_account,
       tokenSymbolKDA,
       tokenDecimalsEVM,
     );
