@@ -34,27 +34,27 @@ const config: HardhatUserConfig = {
       chainId: 31337,
       allowUnlimitedContractSize: true,
       url: "http://anvil:8545",
-      accounts: [privateKey],
+      // accounts: [privateKey],
     },
     sepolia: {
       url: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
       chainId: 11155111,
-      accounts: [privateKey],
+      // accounts: [privateKey],
     },
     ethereum: {
       url: `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
       chainId: 1,
-      accounts: [privateKey],
+      // accounts: [privateKey],
     },
     moonbaseAlpha: {
       url: "https://rpc.api.moonbase.moonbeam.network",
       chainId: 1287,
-      accounts: [privateKey],
+      // accounts: [privateKey],
     },
     polygonMumbai: {
       url: "https://rpc.ankr.com/polygon_mumbai",
       chainId: 80001,
-      accounts: [privateKey],
+      // accounts: [privateKey],
     },
   },
   etherscan: {
