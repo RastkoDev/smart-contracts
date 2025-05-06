@@ -388,14 +388,9 @@
         )
         (id:string (hyperlane-message-id message))
     )
-    (print (format "Initial delivered: {}" [(mailbox.delivered id)]))
-    (print (format "Recipient hash: {}" [(mailbox.get-router-hash hyp-erc20)]))
     (env-verifiers [{"name": "hyperlane_v3_message", "caps": [(mailbox.PROCESS-MLC id message (domain-routing-ism.get-validators message) (domain-routing-ism.get-threshold message))]}])
     (mailbox.process id message)
-    (print (format "Final delivered: {}" [(mailbox.delivered id)]))
     (expect "Message not delivered" true (mailbox.delivered id))
-    (print (domain-routing-ism.get-validators message))
-
 )
 
 (commit-tx)
