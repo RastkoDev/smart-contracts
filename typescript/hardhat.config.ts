@@ -33,8 +33,8 @@ const config: HardhatUserConfig = {
     localhost: {
       chainId: 31337,
       allowUnlimitedContractSize: true,
-      url: "http://anvil:8545",
-      accounts: [privateKey],
+      // url: "http://anvil:8545",
+      // accounts: [privateKey],
     },
     sepolia: {
       url: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,

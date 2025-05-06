@@ -27,14 +27,14 @@ jobs:
         run: npm install
         working-directory: ./typescript
       - name: Run tests
-        uses: ambersun1234/hardhat-test-action@v1
-        with:
-          network: hardhat
+        run: npx hardhat test
+        working-directory: ./typescript
   test-pact:
     name: Test KDA smart contracts
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Install Pact
         run: |
           PACT_VERSION="5.1"
