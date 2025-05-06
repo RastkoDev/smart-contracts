@@ -17,7 +17,8 @@ jobs:
     name: Test EVM smart contracts
     runs-on: ubuntu-22.04
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Install packages
         uses: actions/setup-node@v3
         with:
@@ -26,8 +27,9 @@ jobs:
         run: npm install
         working-directory: ./typescript
       - name: Run tests
-        run: npx hardhat test
-        working-directory: ./typescript
+        uses: ambersun1234/hardhat-test-action@v1
+        with:
+          network: hardhat
   test-pact:
     name: Test KDA smart contracts
     runs-on: ubuntu-22.04
