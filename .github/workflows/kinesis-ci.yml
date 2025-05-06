@@ -5,13 +5,11 @@ on:
     branches:
       - dev
       - main
-      - mainnet
     types: [opened, synchronize, reopened]
   push:
     branches:
       - dev
       - main
-      - mainnet
   workflow_dispatch:
 
 jobs:
@@ -42,4 +40,4 @@ jobs:
       - name: Add Pact to PATH
         run: echo "PATH=$PATH:$GITHUB_WORKSPACE/.bin" >> $GITHUB_ENV
       - name: Run tests
-        run: bin/bash ./shell/ci.sh
+        run: ./shell/ci.sh
