@@ -16,6 +16,8 @@ import "./scripts/deployments/pause/tasks/unpause.ts";
 import dotenv from "dotenv";
 dotenv.config();
 
+const privateKey = process.env.PRIVATE_KEY || "";
+
 const config: HardhatUserConfig = {
   solidity: {
     version: "0.8.28",
@@ -28,25 +30,32 @@ const config: HardhatUserConfig = {
     },
   },
   networks: {
+    hardhat: {},
     localhost: {
       chainId: 31337,
       allowUnlimitedContractSize: true,
+      url: "http://anvil:8545",
+      accounts: [privateKey],
     },
     sepolia: {
       url: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
       chainId: 11155111,
+      accounts: [privateKey],
     },
     ethereum: {
       url: `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
       chainId: 1,
+      accounts: [privateKey],
     },
     moonbaseAlpha: {
       url: "https://rpc.api.moonbase.moonbeam.network",
       chainId: 1287,
+      accounts: [privateKey],
     },
     polygonMumbai: {
       url: "https://rpc.ankr.com/polygon_mumbai",
       chainId: 80001,
+      accounts: [privateKey],
     },
   },
   etherscan: {

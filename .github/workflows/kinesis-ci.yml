@@ -27,7 +27,7 @@ jobs:
         run: npm install
         working-directory: ./typescript
       - name: Run tests
-        run: npx hardhat test
+        run: npx hardhat test --network hardhat
         working-directory: ./typescript
   test-pact:
     name: Test KDA smart contracts
