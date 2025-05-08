@@ -16,7 +16,7 @@ import "./scripts/deployments/pause/tasks/unpause.ts";
 import dotenv from "dotenv";
 dotenv.config();
 
-const privateKey = process.env.PRIVATE_KEY || "";
+const privateKey = `0x${process.env.PRIVATE_KEY}` || "";
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -30,7 +30,6 @@ const config: HardhatUserConfig = {
     },
   },
   networks: {
-    hardhat: {},
     localhost: {
       chainId: 31337,
       allowUnlimitedContractSize: true,
