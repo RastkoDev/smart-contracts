@@ -10,25 +10,25 @@
 (print "\nLoaded Message Id ISM")
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (message-id-ism.ONLY_ADMIN) ] } ])
 (message-id-ism.initialize ["alice" "charly"] 1)
 (commit-tx)
 
 ;; validators-and-threshold
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Correct validators and threshold" (message-id-ism.validators-and-threshold data.message) {"threshold": 1,"validators": ["alice" "charly"]} )
 (commit-tx)
 
 ;; get-validators
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Correct validators" (message-id-ism.get-validators data.message) ["alice" "charly"] )
 (commit-tx)
 
 ;; get-threshold
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Correct threshold" (message-id-ism.get-threshold data.message) 1 )
 (commit-tx)

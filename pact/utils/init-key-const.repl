@@ -5,7 +5,7 @@
   (defun succeed () true)
 )
 
-(define-namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf" test-ns.NAMESPACE_GUARD test-ns.NAMESPACE_GUARD)
+(define-namespace "NAMESPACE" test-ns.NAMESPACE_GUARD test-ns.NAMESPACE_GUARD)
 (commit-tx)
 
 ;; Load structures
@@ -41,7 +41,7 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 ;  ; {"keys": ["94c35ab1bd70243ec670495077f7846373b4dc5e9779d7a6732b5ceb6fde059c"], "pred": "keys-all"}
 ;  ; encoded base-64 eyJrZXlzIjogWyI5NGMzNWFiMWJkNzAyNDNlYzY3MDQ5NTA3N2Y3ODQ2MzczYjRkYzVlOTc3OWQ3YTY3MzJiNWNlYjZmZGUwNTljIl0sInByZWQiOiAia2V5cy1hbGwifQ==
 ;  (print (hyperlane-encode-token-message {"recipient": "eyJrZXlzIjogWyI5NGMzNWFiMWJkNzAyNDNlYzY3MDQ5NTA3N2Y3ODQ2MzczYjRkYzVlOTc3OWQ3YTY3MzJiNWNlYjZmZGUwNTljIl0sInByZWQiOiAia2V5cy1hbGwifQ", "amount": 699000000000000000000.0, "chainId": "1"}))
@@ -85,56 +85,56 @@
 
 ;; Define keysets for the bridge, the treasury, Alice, and Bob
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 
 (env-data { "bridge-admin-keyset": { "keys": [ bridge-keys.bridge ], "pred": "keys-all" } })
-(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.upgrade-admin" (read-keyset "bridge-admin-keyset"))
+(define-keyset "NAMESPACE.upgrade-admin" (read-keyset "bridge-admin-keyset"))
 
 (env-data { "bridge-admin-keyset": { "keys": [ bridge-keys.bridge ], "pred": "keys-all" } })
-(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin" (read-keyset "bridge-admin-keyset"))
+(define-keyset "NAMESPACE.bridge-admin" (read-keyset "bridge-admin-keyset"))
 
 (env-data { "gas-oracle-admin-keyset": { "keys": [ bridge-keys.bridge ], "pred": "keys-all" } })
-(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.gas-oracle-admin" (read-keyset "gas-oracle-admin-keyset"))
+(define-keyset "NAMESPACE.gas-oracle-admin" (read-keyset "gas-oracle-admin-keyset"))
 
 (env-data { "treasury-keyset": { "keys": [ bridge-keys.treasury ], "pred": "keys-all" } })
-(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.treasury" (read-keyset "treasury-keyset"))
+(define-keyset "NAMESPACE.treasury" (read-keyset "treasury-keyset"))
 
 (env-data { "alice-keyset": { "keys": [ bridge-keys.alice ], "pred": "keys-all" } })
-(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.alice" (read-keyset "alice-keyset"))
+(define-keyset "NAMESPACE.alice" (read-keyset "alice-keyset"))
 
 (env-data { "bob-keyset": { "keys": [ bridge-keys.bob ], "pred": "keys-all" } })
-(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bob" (read-keyset "bob-keyset"))
+(define-keyset "NAMESPACE.bob" (read-keyset "bob-keyset"))
 
 (env-data { "charly-keyset": { "keys": [ bridge-keys.charly ], "pred": "keys-all" } })
-(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.charly" (read-keyset "charly-keyset"))
+(define-keyset "NAMESPACE.charly" (read-keyset "charly-keyset"))
 
 (env-data { "recipient-keyset": { "keys": [ data.recipient-key ], "pred": "keys-all" } })
-(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.recipient" (read-keyset "recipient-keyset"))
+(define-keyset "NAMESPACE.recipient" (read-keyset "recipient-keyset"))
 
 (commit-tx)
 
 ;; Register all accounts with `coin` contracts
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
-(coin.create-account "admin" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
-(coin.create-account "treasury" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.treasury"))
-(coin.create-account "alice" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.alice"))
-(coin.create-account "bob" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bob"))  
-(coin.create-account "charly" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.charly"))  
+(namespace "NAMESPACE")
+(coin.create-account "admin" (describe-keyset "NAMESPACE.bridge-admin"))
+(coin.create-account "treasury" (describe-keyset "NAMESPACE.treasury"))
+(coin.create-account "alice" (describe-keyset "NAMESPACE.alice"))
+(coin.create-account "bob" (describe-keyset "NAMESPACE.bob"))  
+(coin.create-account "charly" (describe-keyset "NAMESPACE.charly"))  
 (commit-tx)
 
 ;; Fund the accounts
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (test-capability (coin.COINBASE))
-(coin.coinbase "admin" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin") 1000.0)
-(coin.coinbase "alice" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.alice") 1000.0)
-(coin.coinbase "bob" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bob") 1000.0)
-(coin.coinbase "charly" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.charly") 1000.0)
+(coin.coinbase "admin" (describe-keyset "NAMESPACE.bridge-admin") 1000.0)
+(coin.coinbase "alice" (describe-keyset "NAMESPACE.alice") 1000.0)
+(coin.coinbase "bob" (describe-keyset "NAMESPACE.bob") 1000.0)
+(coin.coinbase "charly" (describe-keyset "NAMESPACE.charly") 1000.0)
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (let
   (
     (keys-guard:guard (at "recipient" (hyperlane-decode-token-message encoded.message-chain0)))
@@ -146,11 +146,11 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "attacker-keyset": {"keys": ["deadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeefdeadbeef"], "pred": "keys-all"} })
-(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.attacker" (read-keyset "attacker-keyset"))
-(coin.create-account "attacker" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.attacker"))
+(define-keyset "NAMESPACE.attacker" (read-keyset "attacker-keyset"))
+(coin.create-account "attacker" (describe-keyset "NAMESPACE.attacker"))
 (test-capability (coin.COINBASE))
-(coin.coinbase "attacker" (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.attacker") 1000.0)
+(coin.coinbase "attacker" (describe-keyset "NAMESPACE.attacker") 1000.0)
 (commit-tx)
 

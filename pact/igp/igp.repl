@@ -11,14 +11,14 @@
 
 ;; initialize
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (igp.ONLY_ADMIN) ] } ])
 (igp.initialize)
 (commit-tx)
 
 ;; setup GasOracle for future operations
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (gas-oracle.ONLY_ORACLE_ADMIN) ] } ])
 (gas-oracle.set-remote-gas-data-configs 
     [
@@ -42,14 +42,14 @@
 
 ;; set-remote-gas-amount ;; fail capability ONLY_ADMIN
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.alice, "caps": [] } ])
 (expect-failure "Cannot interact with igp directly" (igp.set-remote-gas-amount {"domain": 3, "gas-amount": 1000.0}))
 (commit-tx)
 
 ;; set-remote-gas-amount ;; sucess
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (igp.ONLY_ADMIN) ] } ])
 (igp.set-remote-gas-amount {"domain": 1, "gas-amount": 500.0})
 (igp.set-remote-gas-amount {"domain": 2, "gas-amount": 500.0})
@@ -57,7 +57,7 @@
 
 ;; set-remote-gas-amount ;; sucess twice
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (igp.ONLY_ADMIN) ] } ])
 (igp.set-remote-gas-amount {"domain": 1, "gas-amount": 1000.0})
 (igp.set-remote-gas-amount {"domain": 2, "gas-amount": 1000.0})
@@ -65,14 +65,14 @@
 
 ;; quote-gas-payment ;; success
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Charges 1 KDA for tx" 1.0 (igp.quote-gas-payment 1))
 (expect "Charges 2 KDA for tx" 2.0 (igp.quote-gas-payment 2))
 (commit-tx)
 
 ;; pay-for-gas ;; success domain 1
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Alice has 1000 KDA" 1000.0 (coin.get-balance "alice"))
 (expect "Treasury has 0 KDA" 0.0 (coin.get-balance igp.IGP_ACCOUNT))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [ (coin.TRANSFER "alice" igp.IGP_ACCOUNT (igp.quote-gas-payment 1)) ] } ])
@@ -84,7 +84,7 @@
 
 ;; pay-for-gas ;; success domain 2
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Bob has 1000 KDA" 1000.0 (coin.get-balance "bob"))
 (expect "Treasury has 0 KDA" 1.0 (coin.get-balance igp.IGP_ACCOUNT))
 (env-sigs [ { "key": bridge-keys.bob, "caps": [ (coin.TRANSFER "bob" igp.IGP_ACCOUNT (igp.quote-gas-payment 2)) ] } ])
@@ -96,7 +96,7 @@
 
 ;; withdraw-kda ;; success
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Charly has 1000 KDA" 1000.0 (coin.get-balance "charly"))
 (expect "Treasury has 3 KDA" 3.0 (coin.get-balance igp.IGP_ACCOUNT))
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (igp.ONLY_ADMIN) (coin.TRANSFER igp.IGP_ACCOUNT "charly" 3.0) ] } ])

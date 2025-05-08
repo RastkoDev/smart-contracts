@@ -9,7 +9,7 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../ism/merkle-tree-ism.pact")
@@ -18,7 +18,7 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../igp/igp.pact")
@@ -35,14 +35,14 @@
 
 ;; initialize ;; fail
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (domain-routing-ism.ONLY_ADMIN) ] } ])
 (expect-failure "length mismatch" (domain-routing-ism.initialize [data.pol-domain] []))
 (commit-tx)
 
 ;; initialize ;; success
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (domain-routing-ism.ONLY_ADMIN) ] } ])
 (domain-routing-ism.initialize [data.pol-domain] [merkle-tree-ism])
 (expect "correct domains" [data.pol-domain] (domain-routing-ism.get-domains))
@@ -50,7 +50,7 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../mailbox/mailbox.pact")
@@ -59,7 +59,7 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../merkle/merkle-tree-hook.pact")
@@ -68,12 +68,12 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (mailbox.define-hook merkle-tree-hook)
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../hyp-erc20-collateral/hyp-erc20-collateral.pact")
@@ -83,7 +83,7 @@
 
 ;; set-domain ;; fail capability
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "correct domains" [data.pol-domain] (domain-routing-ism.get-domains))
 (expect-failure "no ISM found for origin" (domain-routing-ism.get-module data.eth-domain))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [] } ])
@@ -94,7 +94,7 @@
 
 ;; set-domain ;; success
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "correct domains" [data.pol-domain] (domain-routing-ism.get-domains))
 (expect-failure "no ISM found for origin" (domain-routing-ism.get-module data.eth-domain))
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
@@ -105,7 +105,7 @@
 
 ;; remove-domain ;; fail capability
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "correct domains" [data.pol-domain data.eth-domain] (domain-routing-ism.get-domains))
 (expect "correct ism" merkle-tree-ism (domain-routing-ism.get-module data.eth-domain))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [] } ])
@@ -116,7 +116,7 @@
 
 ;; remove-domain ;; success
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "correct domains" [data.pol-domain data.eth-domain] (domain-routing-ism.get-domains))
 (expect "correct ism" merkle-tree-ism (domain-routing-ism.get-module data.eth-domain))
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
@@ -127,7 +127,7 @@
 
 ;; route ;; success
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message)
 (let*
   (

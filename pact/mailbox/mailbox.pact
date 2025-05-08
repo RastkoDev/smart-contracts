@@ -1,8 +1,8 @@
 ;; Mailbox
 
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 
-(enforce-guard (keyset-ref-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+(enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 (module mailbox GOVERNANCE
 
@@ -20,9 +20,9 @@
    (deftable hashes:{router-hash})
    
    ;; Capabilities
-   (defcap GOVERNANCE () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.upgrade-admin"))
+   (defcap GOVERNANCE () (enforce-guard "NAMESPACE.upgrade-admin"))
    
-   (defcap ONLY_ADMIN () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+   (defcap ONLY_ADMIN () (enforce-guard "NAMESPACE.bridge-admin"))
 
    (defcap ONLY_MAILBOX:bool () true)
 
@@ -319,9 +319,9 @@
 
 (if (read-msg "init")
   [
-    (create-table n_9b079bebc8a0d688e4b2f4279a114148d6760edf.mailbox.contract-state)
-    (create-table n_9b079bebc8a0d688e4b2f4279a114148d6760edf.mailbox.dependencies)
-    (create-table n_9b079bebc8a0d688e4b2f4279a114148d6760edf.mailbox.deliveries)
-    (create-table n_9b079bebc8a0d688e4b2f4279a114148d6760edf.mailbox.hashes)
+    (create-table NAMESPACE.mailbox.contract-state)
+    (create-table NAMESPACE.mailbox.dependencies)
+    (create-table NAMESPACE.mailbox.deliveries)
+    (create-table NAMESPACE.mailbox.hashes)
   ]
   "Upgrade complete")

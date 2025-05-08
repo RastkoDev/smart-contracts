@@ -2,7 +2,7 @@ import path from "path";
 import { IClientWithData, IAccountWithKeys } from "../../utils/interfaces";
 import { upgradeModule, upgradeModuleDirectly } from "../../utils/submit-tx";
 import {
-  createNamedFile,
+  createTokenFile,
   getCollateralFile,
   getSyntheticFile,
 } from "../../generator/generate-modules";
@@ -31,7 +31,7 @@ export const upgradeHypERC20Synth = async (
   precision: number,
 ) => {
   const file = await getSyntheticFile();
-  const resultSyn = await createNamedFile(file, name, precision.toString());
+  const resultSyn = await createTokenFile(file, name, precision.toString());
 
   const result = await upgradeModuleDirectly(
     client,
@@ -51,7 +51,7 @@ export const upgradeHypERC20Coll = async (
   precision: number,
 ) => {
   const file = await getCollateralFile();
-  const resultCol = await createNamedFile(file, name, precision.toString());
+  const resultCol = await createTokenFile(file, name, precision.toString());
 
   const result = await upgradeModuleDirectly(
     client,
