@@ -16,7 +16,9 @@ import "./scripts/deployments/pause/tasks/unpause.ts";
 import dotenv from "dotenv";
 dotenv.config();
 
-const privateKey = `0x${process.env.PRIVATE_KEY}` || "";
+const privateKey =
+  process.env.PRIVATE_KEY ||
+  "0x78c171ee07a367fe1edcdb0a47abb5f37fe566e10516494217b0bbab2b7d4584";
 
 const config: HardhatUserConfig = {
   solidity: {
