@@ -1,8 +1,8 @@
 ;; MerkleTreeHook
 
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 
-(enforce-guard (keyset-ref-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+(enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 (module merkle-tree-hook GOVERNANCE
 
@@ -10,9 +10,9 @@
 
     (use hyperlane-message)
 
-    (defcap GOVERNANCE () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.upgrade-admin"))
+    (defcap GOVERNANCE () (enforce-guard "NAMESPACE.upgrade-admin"))
 
-    (defcap ONLY_ADMIN () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+    (defcap ONLY_ADMIN () (enforce-guard "NAMESPACE.bridge-admin"))
 
     (defcap INTERNAL () true)
 
@@ -231,6 +231,6 @@
 
 (if (read-msg "init")
   [
-    (create-table n_9b079bebc8a0d688e4b2f4279a114148d6760edf.merkle-tree-hook.tree-state)
+    (create-table NAMESPACE.merkle-tree-hook.tree-state)
   ]
   "Upgrade complete")

@@ -1,5 +1,10 @@
 import { PactNumber } from "@kadena/pactjs";
-import { IAccountWithKeys, ICapability, IClientWithData } from "./interfaces";
+import {
+  IAccountWithKeys,
+  ICapability,
+  IClientWithData,
+  IDomains,
+} from "./interfaces";
 import {
   submitReadTx,
   submitSignedTx,
@@ -7,6 +12,7 @@ import {
   submitSignedTxWithCapWithData,
 } from "./submit-tx";
 import { exit } from "process";
+import { NAMESPACES } from "./constants";
 
 export const buyGas = async (
   client: IClientWithData,
@@ -75,8 +81,8 @@ export const defineKeyset = async (
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
 ) => {
-  const command = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
-  (define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.${keyset.keysetName}" (read-keyset "${keyset.keysetName}"))`;
+  const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
+  (define-keyset "${NAMESPACES[client.phase as keyof IDomains]}.${keyset.keysetName}" (read-keyset "${keyset.keysetName}"))`;
 
   const result = await submitSignedTx(client, sender, keyset, command);
   console.log(`\nDefining keyset ${keyset.keysetName}`);
@@ -89,7 +95,7 @@ export const fundAccount = async (
   keyset: IAccountWithKeys,
   amount: number,
 ) => {
-  const command = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf") 
+  const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}") 
   (coin.transfer-create "${sender.name}" "${keyset.name}" (read-keyset "${keyset.keysetName}") ${amount}.0)`;
 
   const capabilities: ICapability[] = [
@@ -128,13 +134,12 @@ export const fundAccount = async (
   console.log(result);
 };
 
-const gs_guard = `(n_9b079bebc8a0d688e4b2f4279a114148d6760edf.kinesis-gas-station.create-gas-payer-guard)`;
-
 export const createGasStation = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   account: IAccountWithKeys,
 ): Promise<string> => {
+  const gs_guard = `(${NAMESPACES[client.phase as keyof IDomains]}.kinesis-gas-station.create-gas-payer-guard)`;
   const command = `(create-principal ${gs_guard})`;
 
   const result = await submitSignedTx(client, sender, account, command);
@@ -161,6 +166,7 @@ export const fundGasStation = async (
   if (client.phase === "testnet") {
     amount = "20";
   }
+  const gs_guard = `(${NAMESPACES[client.phase as keyof IDomains]}.kinesis-gas-station.create-gas-payer-guard)`;
   const command = `(coin.transfer-create "${sender.name}" "${xChainGasStation}" ${gs_guard} ${amount}.0)`;
 
   const capabilities: ICapability[] = [

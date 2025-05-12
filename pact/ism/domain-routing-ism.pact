@@ -1,8 +1,8 @@
 ;; DomainRoutingIsm
 
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 
-(enforce-guard (keyset-ref-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+(enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 (module domain-routing-ism GOVERNANCE
 
@@ -21,9 +21,9 @@
   (deftable domain-routing:{domain-routing-state})
 
   ;; Capabilities
-  (defcap GOVERNANCE () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.upgrade-admin"))
+  (defcap GOVERNANCE () (enforce-guard "NAMESPACE.upgrade-admin"))
 
-  (defcap ONLY_ADMIN () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+  (defcap ONLY_ADMIN () (enforce-guard "NAMESPACE.bridge-admin"))
   
   (defun initialize:[string] (domains:[integer] isms:[module{ism-iface}])
     (with-capability (ONLY_ADMIN)
@@ -106,7 +106,7 @@
 
 (if (read-msg "init")
   [
-    (create-table n_9b079bebc8a0d688e4b2f4279a114148d6760edf.domain-routing-ism.domain-routing)
+    (create-table NAMESPACE.domain-routing-ism.domain-routing)
   ]
   "Upgrade complete"
 )

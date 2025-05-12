@@ -1,6 +1,8 @@
 import { writeFile } from "fs/promises";
 import { readFile } from "fs/promises";
 import path from "path";
+import { NAMESPACES } from "../utils/constants";
+import { IClientWithData, IDomains } from "../utils/interfaces";
 
 export const getCollateralFile = async () => {
   const templateFile = (
@@ -18,54 +20,56 @@ export const getSyntheticFile = async () => {
   return templateFile;
 };
 
-export const createNamedFile = async (
+export const createTokenFile = async (
   file: string,
   moduleName: string,
-  precision: string,
+  precision: string
 ) => {
-  const nameRegExp = new RegExp("<name>", "g");
+  const nameRegExp = new RegExp("SYMBOL", "g");
   let resultFile = file.replaceAll(nameRegExp, moduleName);
-  const precisionRegExp = new RegExp("<precision>", "g");
+  const precisionRegExp = new RegExp("PRECISION", "g");
   resultFile = resultFile.replaceAll(precisionRegExp, precision);
 
   return resultFile;
 };
 
-export const modifyNamespaceFile = async (file: string, namespace: string) => {
-  const namespaceRegExp = new RegExp(
-    "n_9b079bebc8a0d688e4b2f4279a114148d6760edf",
-    "g",
+export const createNamespaceFile = async (
+  client: IClientWithData,
+  file: string
+) => {
+  const namespaceRegExp = new RegExp("NAMESPACE", "g");
+  let resultFile = file.replaceAll(
+    namespaceRegExp,
+    NAMESPACES[client.phase as keyof IDomains]
   );
-  let resultFile = file.replaceAll(namespaceRegExp, namespace);
-
   return resultFile;
 };
 
 async function main() {
   const colPath = path.join(
     __dirname,
-    "../../../pact/hyp-erc20-collateral/hyp-erc20-collateral.pact",
+    "../../../pact/hyp-erc20-collateral/hyp-erc20-collateral.pact"
   );
 
   const synPath = path.join(
     __dirname,
-    "../../../pact/hyp-erc20/hyp-erc20.pact",
+    "../../../pact/hyp-erc20/hyp-erc20.pact"
   );
 
   const synName = "hyp-erc20";
   const colName = "hyp-erc20-collateral";
 
-  const resultSyn = await createNamedFile(
+  const resultSyn = await createTokenFile(
     await getSyntheticFile(),
     synName,
-    "18",
+    "18"
   );
   await writeFile(synPath, resultSyn);
 
-  const resultCol = await createNamedFile(
+  const resultCol = await createTokenFile(
     await getCollateralFile(),
     colName,
-    "18",
+    "18"
   );
   await writeFile(colPath, resultCol);
 }

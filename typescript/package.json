@@ -35,7 +35,6 @@
     "verify-core:mainnet": "npx hardhat verify-core mainnet",
     "verify-warp:mainnet": "npx hardhat verify-warp ../../kinesis-deploy/tmp/artifacts/erc20.txt ../../kinesis-deploy/tmp/artifacts/agent-config.json mainnet --network ethereum",
     "mock": "ts-node ./scripts/mocks/run-mock.ts",
-    "generate": "ts-node ./scripts/generator/generate-modules.ts",
     "solhint": "solhint contracts/**/*.sol"
   },
   "dependencies": {

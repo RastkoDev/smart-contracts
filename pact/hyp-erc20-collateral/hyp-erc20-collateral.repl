@@ -10,14 +10,14 @@
 
 ;; initialize
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (hyp-erc20-collateral.ONLY_ADMIN) ] } ])
 (hyp-erc20-collateral.initialize coin)
 (commit-tx)
 
 ;; enroll-remote-router ;; fail capability ONLY_ADMIN
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect-failure "Has remote router" (hyp-erc20-collateral.has-remote-router data.eth-domain))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [] } ])
 (expect-failure "Cannot interact with heyp-erc20 directly" (hyp-erc20-collateral.enroll-remote-router data.eth-domain data.eth-router))
@@ -26,7 +26,7 @@
 
 ;; enroll-remote-router ;; fail wrong domain 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect-failure "Has remote router" (hyp-erc20-collateral.has-remote-router "0"))
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (hyp-erc20-collateral.ONLY_ADMIN) ] } ])
 (expect-failure "Domain cannot be zero" (hyp-erc20-collateral.enroll-remote-router "0" data.eth-router))
@@ -35,7 +35,7 @@
 
 ;; enroll-remote-router ;; success
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect-failure "Has remote router" (hyp-erc20-collateral.has-remote-router data.eth-domain))
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (hyp-erc20-collateral.ONLY_ADMIN) ] } ])
 (hyp-erc20-collateral.enroll-remote-router data.eth-domain data.eth-router)
@@ -43,14 +43,14 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (mailbox.ONLY_ADMIN) ] } ])
 (mailbox.store-router hyp-erc20-collateral)
 (commit-tx)
 
 ;; enroll-remote-router ;; edit
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Has remote router" data.eth-router (hyp-erc20-collateral.has-remote-router data.eth-domain))
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (hyp-erc20-collateral.ONLY_ADMIN) ] } ])
 (hyp-erc20-collateral.enroll-remote-router data.eth-domain data.eth-router-bis)
@@ -59,13 +59,13 @@
 
 ;; quote-gas-payment
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Charges 1 KDA for tx" 1.0 (hyp-erc20-collateral.quote-gas-payment data.eth-domain))
 (commit-tx)
 
 ;; transfer-remote ;; transfer-from ;; success      
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Alice balance before the dispatch" 1000.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
 (expect "Treasury balance before the dispatch" 0.0 (coin.get-balance (hyp-erc20-collateral.get-collateral-account)))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [ 
@@ -88,7 +88,7 @@
 
 ;; handle ;; fail capability
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Alice balance before the process" 300.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
 (expect "Treasury balance before the process" 699.0 (coin.get-balance (hyp-erc20-collateral.get-collateral-account)))
 (expect-failure "Cannot interact with contract directly" (hyp-erc20-collateral.handle data.eth-domain "AAAAAAAAAAAAAAAAS9NJkuCZTp08U8HM_lwuOLkHM44" (str-to-int "0") (create-principal "eyJrZXlzIjogWyIzYTlkZDUzMmQ3M2RhY2UxOTVkYmI2NGQxZGJhNjU3MmZiNzgzZDBmZGQzMjQ2ODVlMzJmYmRhMmY4OWY5OWE2Il0sInByZWQiOiAia2V5cy1hbGwifQ") "eyJrZXlzIjogWyIzYTlkZDUzMmQ3M2RhY2UxOTVkYmI2NGQxZGJhNjU3MmZiNzgzZDBmZGQzMjQ2ODVlMzJmYmRhMmY4OWY5OWE2Il0sInByZWQiOiAia2V5cy1hbGwifQ" 15.0))
@@ -98,7 +98,7 @@
 
 ;; handle ;; transfer-create-to ;; fail wrong sender
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message [hyperlane-message])
 
 (env-chain-data { "chain-id": "0"})
@@ -130,7 +130,7 @@
 
 ;; handle ;; transfer-create-to ;; success
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message [hyperlane-message])
 
 (env-chain-data { "chain-id": "0"})
@@ -162,7 +162,7 @@
 
 ;; handle ;; transfer-create-to-crosschain ;; fail wrong sender
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message [hyperlane-message])
 
 (env-chain-data { "chain-id": "0"})
@@ -194,7 +194,7 @@
 
 ;; handle ;; transfer-create-to-crosschain ;; success
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message [hyperlane-message])
 
 (env-chain-data { "chain-id": "0"})

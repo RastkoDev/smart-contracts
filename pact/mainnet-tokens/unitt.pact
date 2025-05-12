@@ -1,6 +1,6 @@
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 
-(enforce-guard (keyset-ref-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+(enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 (module unitt GOVERNANCE
 
@@ -20,7 +20,7 @@
   ; --------------------------------------------------------------------------
   ; Constants
 
-  (defconst ADMIN_KEYSET "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.admin-keyset")
+  (defconst ADMIN_KEYSET "NAMESPACE.admin-keyset")
 
   (defconst ROOT_ACCOUNT_ID:string "17760fc3c5deda5903f7d1fd869b944d10f40f0d425dbe919ed5113064e807a7"
     " ID for the account which initially owns all the tokens.  ")

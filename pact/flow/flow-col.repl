@@ -2,7 +2,7 @@
 
 ;; Create an account for recipient and fund it
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (let
     (
         (keys-guard:guard (at "recipient" (hyperlane-decode-token-message data.encoded-tm)))
@@ -15,7 +15,7 @@
 
 ;; Transfer the message to the remote
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-chain-data { "sender": data.recipient })
 
 (print "\nDispatching HyperlaneMessage")
@@ -43,7 +43,7 @@
 
 ;; Process the incoming tx
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message [hyperlane-message])
 
 (env-chain-data { "block-height": 5 })
