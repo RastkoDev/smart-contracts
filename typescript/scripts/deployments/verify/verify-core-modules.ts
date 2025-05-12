@@ -4,9 +4,8 @@ import { verifyModule } from "../../utils/submit-tx";
 export const verifyGasOracle = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys,
+  keyset: IAccountWithKeys
 ) => {
-  const mainnetNamespace = "n_e595727b657fbbb3b8e362a05a7bb8d12865c1ff";
   const moduleFolder = "gas-oracle";
   const moduleName = "gas-oracle";
 
@@ -14,9 +13,8 @@ export const verifyGasOracle = async (
     client,
     sender,
     keyset,
-    mainnetNamespace,
     moduleFolder,
-    moduleName,
+    moduleName
   );
   console.log("\nVerifiying GasOracle");
   console.log(result);
@@ -25,9 +23,8 @@ export const verifyGasOracle = async (
 export const verifyValidatorAnnounce = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys,
+  keyset: IAccountWithKeys
 ) => {
-  const mainnetNamespace = "n_e595727b657fbbb3b8e362a05a7bb8d12865c1ff";
   const moduleFolder = "validator-announce";
   const moduleName = "validator-announce";
 
@@ -35,9 +32,8 @@ export const verifyValidatorAnnounce = async (
     client,
     sender,
     keyset,
-    mainnetNamespace,
     moduleFolder,
-    moduleName,
+    moduleName
   );
   console.log("\nVerifiying ValidatorAnnounce");
   console.log(result);
@@ -46,9 +42,8 @@ export const verifyValidatorAnnounce = async (
 export const verifyISM = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys,
+  keyset: IAccountWithKeys
 ) => {
-  const mainnetNamespace = "n_e595727b657fbbb3b8e362a05a7bb8d12865c1ff";
   const moduleFolder = "ism";
   const moduleName = "merkle-tree-ism";
 
@@ -56,9 +51,8 @@ export const verifyISM = async (
     client,
     sender,
     keyset,
-    mainnetNamespace,
     moduleFolder,
-    moduleName,
+    moduleName
   );
   console.log("\nVerifiying ISM");
   console.log(result);
@@ -67,9 +61,8 @@ export const verifyISM = async (
 export const verifyISMRouting = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys,
+  keyset: IAccountWithKeys
 ) => {
-  const mainnetNamespace = "n_e595727b657fbbb3b8e362a05a7bb8d12865c1ff";
   const moduleFolder = "ism";
   const moduleName = "domain-routing-ism";
 
@@ -77,9 +70,8 @@ export const verifyISMRouting = async (
     client,
     sender,
     keyset,
-    mainnetNamespace,
     moduleFolder,
-    moduleName,
+    moduleName
   );
   console.log("\nVerifiying ISM Routing");
   console.log(result);
@@ -88,9 +80,8 @@ export const verifyISMRouting = async (
 export const verifyIGP = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys,
+  keyset: IAccountWithKeys
 ) => {
-  const mainnetNamespace = "n_e595727b657fbbb3b8e362a05a7bb8d12865c1ff";
   const moduleFolder = "igp";
   const moduleName = "igp";
 
@@ -98,9 +89,8 @@ export const verifyIGP = async (
     client,
     sender,
     keyset,
-    mainnetNamespace,
     moduleFolder,
-    moduleName,
+    moduleName
   );
   console.log("\nVerifiying IGP");
   console.log(result);
@@ -109,9 +99,8 @@ export const verifyIGP = async (
 export const verifyMerkleTreeHook = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys,
+  keyset: IAccountWithKeys
 ) => {
-  const mainnetNamespace = "n_e595727b657fbbb3b8e362a05a7bb8d12865c1ff";
   const moduleFolder = "merkle";
   const moduleName = "merkle-tree-hook";
 
@@ -119,9 +108,8 @@ export const verifyMerkleTreeHook = async (
     client,
     sender,
     keyset,
-    mainnetNamespace,
     moduleFolder,
-    moduleName,
+    moduleName
   );
   console.log("\nVerifiying Merkle Tree Hook");
   console.log(result);
@@ -130,9 +118,8 @@ export const verifyMerkleTreeHook = async (
 export const verifyMailbox = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys,
+  keyset: IAccountWithKeys
 ) => {
-  const mainnetNamespace = "n_e595727b657fbbb3b8e362a05a7bb8d12865c1ff";
   const moduleFolder = "mailbox";
   const moduleName = "mailbox";
 
@@ -140,9 +127,8 @@ export const verifyMailbox = async (
     client,
     sender,
     keyset,
-    mainnetNamespace,
     moduleFolder,
-    moduleName,
+    moduleName
   );
   console.log("\nVerifiying Mailbox");
   console.log(result);
@@ -151,9 +137,8 @@ export const verifyMailbox = async (
 export const verifyGasStation = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys,
+  keyset: IAccountWithKeys
 ) => {
-  const mainnetNamespace = "n_e595727b657fbbb3b8e362a05a7bb8d12865c1ff";
   const moduleFolder = "gas-station";
   const moduleName = "kinesis-gas-station";
 
@@ -161,9 +146,8 @@ export const verifyGasStation = async (
     client,
     sender,
     keyset,
-    mainnetNamespace,
     moduleFolder,
-    moduleName,
+    moduleName
   );
   console.log("\nVerifiying Gas Station");
   console.log(result);

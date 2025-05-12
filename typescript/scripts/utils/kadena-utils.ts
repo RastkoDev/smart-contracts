@@ -17,7 +17,7 @@ import { NAMESPACES } from "./constants";
 export const buyGas = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys,
+  keyset: IAccountWithKeys
 ) => {
   // When deploying on testnet bridge admin must have 100 coins on each chain
   // Obtain through kadena faucet
@@ -43,11 +43,11 @@ export const buyGas = async (
     keyset,
     command,
     capabilities,
-    sender.keysetName,
+    sender.keysetName
   );
 
   console.log(
-    `Funding account: k:${keyset.keys.publicKey}\nPublic Key: ${keyset.keys.publicKey}`,
+    `Funding account: k:${keyset.keys.publicKey}\nPublic Key: ${keyset.keys.publicKey}`
   );
   console.log(result);
 };
@@ -55,7 +55,7 @@ export const buyGas = async (
 export const createNamespace = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys,
+  keyset: IAccountWithKeys
 ): Promise<string> => {
   const command = `(let ((ns-name (ns.create-principal-namespace (read-keyset "${sender.keysetName}"))))
     (define-namespace ns-name (read-keyset "${sender.keysetName}") (read-keyset "${sender.keysetName}")))`;
@@ -79,7 +79,7 @@ export const createNamespace = async (
 export const defineKeyset = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys,
+  keyset: IAccountWithKeys
 ) => {
   const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
   (define-keyset "${NAMESPACES[client.phase as keyof IDomains]}.${keyset.keysetName}" (read-keyset "${keyset.keysetName}"))`;
@@ -93,7 +93,7 @@ export const fundAccount = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
-  amount: number,
+  amount: number
 ) => {
   const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}") 
   (coin.transfer-create "${sender.name}" "${keyset.name}" (read-keyset "${keyset.keysetName}") ${amount}.0)`;
@@ -118,7 +118,7 @@ export const fundAccount = async (
       keyset,
       command,
       capabilities,
-      "",
+      ""
     );
   } else {
     result = await submitSignedTxWithCap(
@@ -126,7 +126,7 @@ export const fundAccount = async (
       sender,
       keyset,
       command,
-      capabilities,
+      capabilities
     );
   }
 
@@ -137,7 +137,7 @@ export const fundAccount = async (
 export const createGasStation = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  account: IAccountWithKeys,
+  account: IAccountWithKeys
 ): Promise<string> => {
   const gs_guard = `(${NAMESPACES[client.phase as keyof IDomains]}.kinesis-gas-station.create-gas-payer-guard)`;
   const command = `(create-principal ${gs_guard})`;
@@ -160,7 +160,7 @@ export const fundGasStation = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   account: IAccountWithKeys,
-  xChainGasStation: string,
+  xChainGasStation: string
 ) => {
   let amount = "1000";
   if (client.phase === "testnet") {
@@ -186,7 +186,7 @@ export const fundGasStation = async (
     sender,
     account,
     command,
-    capabilities,
+    capabilities
   );
   console.log("\nFunding GasStation");
   console.log(result);
@@ -194,11 +194,10 @@ export const fundGasStation = async (
 
 export const getDeployedHash = async (
   client: IClientWithData,
-  namespace: string,
-  moduleName: string,
+  moduleName: string
 ) => {
-  const command = `(namespace "${namespace}")
-  (at "hash" (describe-module "${namespace}.${moduleName}"))`;
+  const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
+  (at "hash" (describe-module "${NAMESPACES[client.phase as keyof IDomains]}.${moduleName}"))`;
 
   const result = await submitReadTx(client, command);
   return result;

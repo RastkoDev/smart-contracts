@@ -268,26 +268,25 @@ export const verifyModuleDirectly = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
-  namespace: string,
-  repoFile: string,
+  file: string,
   moduleName: string
 ) => {
-  let namespaceRepoFile = await modifyNamespaceFile(repoFile, namespace);
-  const index = namespaceRepoFile.indexOf('(if (read-msg "init")');
+  let resultFile = await createNamespaceFile(client, file);
+  const index = resultFile.indexOf('(if (read-msg "init")');
   if (index !== -1) {
-    namespaceRepoFile = namespaceRepoFile.slice(0, index);
+    resultFile = resultFile.slice(0, index);
   }
   const submitTx = (await submitVerifyContract(
     client,
     sender,
     keyset,
-    namespaceRepoFile
+    resultFile
   )) as unknown as TxData;
   const array = submitTx.data.split(" ");
   const repoHash = array[array.length - 1];
 
   const mainnetHash = (
-    (await getDeployedHash(client, namespace, moduleName)) as unknown as TxData
+    (await getDeployedHash(client, moduleName)) as unknown as TxData
   ).data;
 
   if (repoHash === mainnetHash) return "Verification successfull";
@@ -320,7 +319,6 @@ export const verifyModule = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
-  namespace: string,
   moduleFolder: string,
   moduleName: string
 ) => {
@@ -329,23 +327,23 @@ export const verifyModule = async (
     __dirname,
     folderPrefix + moduleFolder + "/" + moduleName + ".pact"
   );
-  const repoFile = (await readFile(fileName)).toString();
-  let namespaceRepoFile = await modifyNamespaceFile(repoFile, namespace);
-  const index = namespaceRepoFile.indexOf('(if (read-msg "init")');
+  const file = (await readFile(fileName)).toString();
+  let resultFile = await createNamespaceFile(client, file);
+  const index = resultFile.indexOf('(if (read-msg "init")');
   if (index !== -1) {
-    namespaceRepoFile = namespaceRepoFile.slice(0, index);
+    resultFile = resultFile.slice(0, index);
   }
   const submitTx = (await submitVerifyContract(
     client,
     sender,
     keyset,
-    namespaceRepoFile
+    resultFile
   )) as unknown as TxData;
   const array = submitTx.data.split(" ");
   const repoHash = array[array.length - 1];
 
   const mainnetHash = (
-    (await getDeployedHash(client, namespace, moduleName)) as unknown as TxData
+    (await getDeployedHash(client, moduleName)) as unknown as TxData
   ).data;
 
   if (repoHash === mainnetHash) return "Verification successfull";

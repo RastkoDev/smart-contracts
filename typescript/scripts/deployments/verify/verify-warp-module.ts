@@ -1,7 +1,7 @@
 import { IAccountWithKeys, IClientWithData } from "../../utils/interfaces";
 import { verifyModuleDirectly } from "../../utils/submit-tx";
 import {
-  createNamedFile,
+  createTokenFile,
   getCollateralFile,
   getSyntheticFile,
 } from "../../generator/generate-modules";
@@ -11,19 +11,17 @@ export const verifyHypERC20Synth = async (
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
   name: string,
-  precision: number,
+  precision: number
 ) => {
-  const mainnetNamespace = "n_e595727b657fbbb3b8e362a05a7bb8d12865c1ff";
   const file = await getSyntheticFile();
-  const resultSyn = await createNamedFile(file, name, precision.toString());
+  const resultSyn = await createTokenFile(file, name, precision.toString());
 
   const result = await verifyModuleDirectly(
     client,
     sender,
     keyset,
-    mainnetNamespace,
     resultSyn,
-    name,
+    name
   );
   console.log(`\nVerifying ${name}`);
   console.log(result);
@@ -34,19 +32,17 @@ export const verifyHypERC20Coll = async (
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
   name: string,
-  precision: number,
+  precision: number
 ) => {
-  const mainnetNamespace = "n_e595727b657fbbb3b8e362a05a7bb8d12865c1ff";
   const file = await getCollateralFile();
-  const resultCol = await createNamedFile(file, name, precision.toString());
+  const resultCol = await createTokenFile(file, name, precision.toString());
 
   const result = await verifyModuleDirectly(
     client,
     sender,
     keyset,
-    mainnetNamespace,
     resultCol,
-    name,
+    name
   );
   console.log(`\nVerifying ${name}`);
   console.log(result);
