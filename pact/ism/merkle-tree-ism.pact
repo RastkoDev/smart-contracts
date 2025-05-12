@@ -1,8 +1,8 @@
 ;; AbstractMerkleRootMultisigIsm
 
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 
-(enforce-guard (keyset-ref-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+(enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 ;; `verify-spv` functions do most of the functionality of ISM.
 
@@ -17,9 +17,9 @@
   (deftable contract-state:{ism-state})
 
   ;; Capabilities
-  (defcap GOVERNANCE () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.upgrade-admin"))
+  (defcap GOVERNANCE () (enforce-guard "NAMESPACE.upgrade-admin"))
 
-  (defcap ONLY_ADMIN () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+  (defcap ONLY_ADMIN () (enforce-guard "NAMESPACE.bridge-admin"))
 
   (defun initialize:string (validators:[string] threshold:integer)
     (with-capability (ONLY_ADMIN)
@@ -81,6 +81,6 @@
 
 (if (read-msg "init")
   [
-    (create-table n_9b079bebc8a0d688e4b2f4279a114148d6760edf.merkle-tree-ism.contract-state)
+    (create-table NAMESPACE.merkle-tree-ism.contract-state)
   ]
   "Upgrade complete")

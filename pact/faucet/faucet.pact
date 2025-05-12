@@ -1,6 +1,6 @@
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 
-(enforce-guard (keyset-ref-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+(enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 (module coin-faucet GOVERNANCE
 
@@ -10,10 +10,10 @@
 
   (use coin)
 
-  (defconst GOVERNANCE_KEYSET (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+  (defconst GOVERNANCE_KEYSET (enforce-guard "NAMESPACE.bridge-admin"))
 
   (defcap GOVERNANCE()
-    (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin")
+    (enforce-guard "NAMESPACE.bridge-admin")
   )
 
   (defcap ALLOW_FUNDING () true)
@@ -72,7 +72,7 @@
     (compose-capability (ALLOW_FUNDING))
   )
 
-  (defconst NS:string "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+  (defconst NS:string "NAMESPACE")
 
   (defun create-gas-payer-guard:guard ()
     @doc

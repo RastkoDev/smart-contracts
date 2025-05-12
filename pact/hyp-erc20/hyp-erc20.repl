@@ -3,7 +3,7 @@
 
 ;; load + set up hyp-erc20-collateral
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../hyp-erc20-collateral/hyp-erc20-collateral.pact")
@@ -12,7 +12,7 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (hyp-erc20-collateral.ONLY_ADMIN) ] } ])
 (hyp-erc20-collateral.enroll-remote-router data.eth-domain data.eth-router)
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (mailbox.ONLY_ADMIN) ] } ])
@@ -28,7 +28,7 @@
 
 ;; enroll-remote-router ;; fail capability ONLY_ADMIN
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect-failure "Has remote router" (hyp-erc20.has-remote-router data.eth-domain))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [] } ])
 (expect-failure "Cannot interact with heyp-erc20 directly" (hyp-erc20.enroll-remote-router data.eth-domain data.eth-router))
@@ -37,7 +37,7 @@
 
 ;; enroll-remote-router ;; fail wrong domain 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect-failure "Has remote router" (hyp-erc20.has-remote-router "0"))
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (hyp-erc20.ONLY_ADMIN) ] } ])
 (expect-failure "Domain cannot be zero" (hyp-erc20.enroll-remote-router "0" data.eth-router))
@@ -46,7 +46,7 @@
 
 ;; enroll-remote-router ;; success
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect-failure "Has remote router" (hyp-erc20.has-remote-router data.eth-domain))
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (hyp-erc20.ONLY_ADMIN) ] } ])
 (hyp-erc20.enroll-remote-router data.eth-domain data.eth-router)
@@ -54,14 +54,14 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (mailbox.ONLY_ADMIN) ] } ])
 (mailbox.store-router hyp-erc20)
 (commit-tx)
 
 ;; enroll-remote-router ;; edit
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Has remote router" data.eth-router (hyp-erc20.has-remote-router data.eth-domain))
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (hyp-erc20.ONLY_ADMIN) ] } ])
 (hyp-erc20.enroll-remote-router data.eth-domain data.eth-router-bis)
@@ -70,13 +70,13 @@
 
 ;; quote-gas-payment
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Charges 1 KDA for tx" 1.0 (hyp-erc20.quote-gas-payment data.eth-domain))
 (commit-tx)
 
 ;; transfer-remote ;; transfer-from ;; fail not enough funds
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect-failure "Alice balance before the dispatch" (hyp-erc20.get-balance bridge-keys.alice-principal))
 (expect "Alice balance before the dispatch" 1000.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [ 
@@ -88,7 +88,7 @@
 
 ;; handle ;; fail capability
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect-failure "Alice balance before the process" (hyp-erc20.get-balance bridge-keys.alice-principal))
 (expect "Alice balance after the process" 1000.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
 (expect-failure "Cannot interact with contract directly" (hyp-erc20.handle data.eth-domain "AAAAAAAAAAAAAAAAS9NJkuCZTp08U8HM_lwuOLkHM44" (str-to-int "0") (create-principal "eyJrZXlzIjogWyIzYTlkZDUzMmQ3M2RhY2UxOTVkYmI2NGQxZGJhNjU3MmZiNzgzZDBmZGQzMjQ2ODVlMzJmYmRhMmY4OWY5OWE2Il0sInByZWQiOiAia2V5cy1hbGwifQ") "eyJrZXlzIjogWyIzYTlkZDUzMmQ3M2RhY2UxOTVkYmI2NGQxZGJhNjU3MmZiNzgzZDBmZGQzMjQ2ODVlMzJmYmRhMmY4OWY5OWE2Il0sInByZWQiOiAia2V5cy1hbGwifQ" 15.0))
@@ -98,7 +98,7 @@
 
 ;; handle ;; transfer-create-to ;; fail wrong sender
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message [hyperlane-message])
 
 (env-chain-data { "chain-id": "0"})
@@ -130,7 +130,7 @@
 
 ;; handle ;; transfer-create-to ;; success
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message [hyperlane-message])
 
 (env-chain-data { "chain-id": "0"})
@@ -162,7 +162,7 @@
 
 ;; handle ;; transfer-create-to-crosschain ;; fail wrong sender
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message [hyperlane-message])
 
 (env-chain-data { "chain-id": "0"})
@@ -194,7 +194,7 @@
 
 ;; handle ;; transfer-create-to-crosschain ;; success
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message [hyperlane-message])
 
 (env-chain-data { "chain-id": "0"})
@@ -227,7 +227,7 @@
 
 ;; transfer-remote ;; transfer-from ;; success
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Alice balance before the dispatch" 30.0 (hyp-erc20.get-balance bridge-keys.alice-principal))
 (expect "Alice balance before the dispatch" 1000.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [ 
@@ -243,7 +243,7 @@
 (begin-tx "Amir Transfer POC")
 (env-keys [])
 (env-sigs [])
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "b": {"keys": [bridge-keys.bob], "pred": "keys-all"} })
 (expect-failure "Account creation" (hyp-erc20.create-account bridge-keys.bob-principal  (read-msg "b")))
 (expect-failure "Receiver must be signer" (hyp-erc20.transfer-remote data.eth-domain bridge-keys.alice-principal bridge-keys.bob-principal 10.0))
@@ -253,17 +253,17 @@
 (env-hash (hash "poc-1"))
 (env-keys [])
 (env-sigs [])
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "b": {"keys": [bridge-keys.alice], "pred": "keys-all"} })
 (expect "Alice balance before potential hack" 20.0 (hyp-erc20.get-balance bridge-keys.alice-principal))
 (expect-failure "Cannot be called other than internally" (hyp-erc20.transfer-create-to-crosschain bridge-keys.alice-principal (read-msg "b") 1.0 "1"))
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-hash (hash "poc-1"))
 (use hyp-erc20)
-(expect-failure "No value found in table n_9b079bebc8a0d688e4b2f4279a114148d6760edf.hyp-erc20_accounts for key: alice" (get-balance "alice"))
+(expect-failure "No value found in table NAMESPACE.hyp-erc20_accounts for key: alice" (get-balance "alice"))
 (env-data { "b": {"keys": [bridge-keys.alice], "pred": "keys-all"},
 "amount":1.0, "target-chain": "1" })
 (expect-failure "Cannot be called other than internally" (transfer-create-to-crosschain bridge-keys.alice-principal (read-msg "b") (read-msg "amount") (read-msg "target-chain")))

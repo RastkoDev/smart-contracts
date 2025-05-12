@@ -2,6 +2,7 @@ import * as fs from "fs";
 import path from "path";
 import { IClientWithData, IAccountWithKeys } from "../../utils/interfaces";
 import { submitSignedTx } from "../../utils/submit-tx";
+import { createNamespaceFile } from "../../generator/generate-modules";
 
 export const deployStructs = async (
   client: IClientWithData,
@@ -47,7 +48,8 @@ const loadFolderInOrder = async (
   for (const fileName of fileNames) {
     const filePath = path.join(currentDir, fileName);
     const file = (await fs.promises.readFile(filePath)).toString();
-    const result = await submitSignedTx(client, sender, account, file);
+    const resultFile = await createNamespaceFile(client, file);
+    const result = await submitSignedTx(client, sender, account, resultFile);
     console.log("\n", filePath);
     console.log(result);
   }

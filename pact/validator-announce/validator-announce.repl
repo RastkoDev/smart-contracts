@@ -26,7 +26,7 @@
 
 ;; no announce 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Announced validators fetched" [] (validator-announce.get-announced-validators))
 (expect "Empty storage Locations fetched" [[]] (validator-announce.get-announced-storage-locations [data1.validator]))
 (expect "Empty storage Location fetched" [] (validator-announce.get-announced-storage-location data1.validator))
@@ -34,7 +34,7 @@
 
 ;; announce ;; success 1
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Validator Announcement is made" true (validator-announce.announce data1.validator data1.storage data1.signature))
 (expect "Announced validators fetched" [data1.validator] (validator-announce.get-announced-validators))
 (expect "Storage Locations fetched" [[data1.storage]] (validator-announce.get-announced-storage-locations [data1.validator]))
@@ -43,7 +43,7 @@
 
 ;; announce ;; success 2
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Validator Announcement is made" true (validator-announce.announce data2.validator data2.storage data2.signature))
 (expect "Announced validators fetched" [data1.validator data2.validator] (validator-announce.get-announced-validators))
 (expect "Storage Locations fetched" [[data1.storage] [data2.storage]] (validator-announce.get-announced-storage-locations [data1.validator data2.validator]))
@@ -52,7 +52,7 @@
 
 ;; announce ;; fail known hash
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect-failure "Replay attack not possible" (validator-announce.announce data1.validator data1.storage data1.signature))
 (expect-failure "Replay attack not possible" (validator-announce.announce data2.validator data2.storage data2.signature))
 (commit-tx)

@@ -4,6 +4,7 @@ import {
   IAccountWithKeys,
   ICapability,
   TxData,
+  IDomains,
 } from "../../utils/interfaces";
 import {
   submitSignedTxWithCap,
@@ -13,11 +14,12 @@ import {
   deployModule,
 } from "../../utils/submit-tx";
 import {
-  createNamedFile,
+  createTokenFile,
   getCollateralFile,
   getSyntheticFile,
 } from "../../generator/generate-modules";
 import { PactNumber } from "@kadena/pactjs";
+import { NAMESPACES } from "../../utils/constants";
 
 const folderPrefix = "../../../../pact/";
 
@@ -29,7 +31,7 @@ export const deployHypERC20Synth = async (
   precision: number,
 ) => {
   const file = await getSyntheticFile();
-  const resultSyn = await createNamedFile(file, name, precision.toString());
+  const resultSyn = await createTokenFile(file, name, precision.toString());
 
   const result = await deployModuleDirectly(client, sender, account, resultSyn);
   console.log(`\nDeploying ${name}`);
@@ -45,16 +47,18 @@ export const deployHypERC20Coll = async (
   precision: number,
 ) => {
   const file = await getCollateralFile();
-  const resultCol = await createNamedFile(file, name, precision.toString());
+  const resultCol = await createTokenFile(file, name, precision.toString());
   const result = await deployModuleDirectly(client, sender, account, resultCol);
   console.log(`\nDeploying ${name}`);
   console.log(result);
 
-  const initCommand = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+  const initCommand = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
     (${name}.initialize ${collateral})`;
   const capabilities: ICapability[] = [
     { name: "coin.GAS" },
-    { name: `n_9b079bebc8a0d688e4b2f4279a114148d6760edf.${name}.ONLY_ADMIN` },
+    {
+      name: `${NAMESPACES[client.phase as keyof IDomains]}.${name}.ONLY_ADMIN`,
+    },
   ];
   const initResult = await submitSignedTxWithCap(
     client,
@@ -91,11 +95,13 @@ export const enrollRemoteRouter = async (
   remoteRouterAddress: string,
 ) => {
   const enrollCommand = `
-    (namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+    (namespace "${NAMESPACES[client.phase as keyof IDomains]}")
     (${token}.enroll-remote-router ${remoteRouterDomain} "${remoteRouterAddress}")`;
   const capabilities: ICapability[] = [
     { name: "coin.GAS" },
-    { name: `n_9b079bebc8a0d688e4b2f4279a114148d6760edf.${token}.ONLY_ADMIN` },
+    {
+      name: `${NAMESPACES[client.phase as keyof IDomains]}.${token}.ONLY_ADMIN`,
+    },
   ];
   const enrollResult = await submitSignedTxWithCap(
     client,
@@ -112,7 +118,7 @@ export const getRouterHash = async (
   client: IClientWithData,
   moduleName: string,
 ) => {
-  const command = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+  const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
     (base64-decode (mailbox.get-router-hash ${moduleName}))`;
   const result = await submitReadTx(client, command);
   return result;
@@ -124,7 +130,7 @@ export const storeRouterToMailbox = async (
   account: IAccountWithKeys,
   routerName: string,
 ) => {
-  const command = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+  const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
     (mailbox.store-router ${routerName})`;
   const result = await submitSignedTx(client, sender, account, command);
   console.log(`\nStoring router to Mailbox`);
@@ -137,11 +143,11 @@ export const fundCollateralAccount = async (
   token: string,
   amount: number,
 ) => {
-  const readCommand = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf") (${token}.get-collateral-account)`;
+  const readCommand = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}") (${token}.get-collateral-account)`;
   const tx = (await submitReadTx(client, readCommand)) as unknown as TxData;
   const collateralAccount = tx.data;
 
-  const command = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf") (coin.transfer "${sender.name}" "${collateralAccount}" ${amount}.0)`;
+  const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}") (coin.transfer "${sender.name}" "${collateralAccount}" ${amount}.0)`;
   const capabilities: ICapability[] = [
     { name: "coin.GAS" },
     {
@@ -170,7 +176,7 @@ export const getBalanceERC20 = async (
   account: IAccountWithKeys,
   token: string,
 ) => {
-  const command = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+  const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
     (${token}.get-balance "${account.name}")`;
   const result = await submitSignedTx(client, sender, account, command);
   console.log(`\nGetting balance ${token}`);

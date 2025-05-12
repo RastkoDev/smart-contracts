@@ -1,11 +1,12 @@
 import { http, walletActions, getContract, createPublicClient } from "viem";
 import { PausableIsm__factory } from "@hyperlane-xyz/core";
 import { HardhatRuntimeEnvironment } from "hardhat/types";
-import { bridgeNetwork } from "../../utils/constants";
+import { bridgeNetwork, NAMESPACES } from "../../utils/constants";
 import {
   IAccountWithKeys,
   ICapability,
   IClientWithData,
+  IDomains,
 } from "../../utils/interfaces";
 import { submitSignedTxWithCap } from "../../utils/submit-tx";
 
@@ -14,12 +15,14 @@ export const pauseKDA = async (
   sender: IAccountWithKeys,
   account: IAccountWithKeys,
 ) => {
-  const command = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+  const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
       (mailbox.pause)`;
 
   const capabilities: ICapability[] = [
     { name: "coin.GAS" },
-    { name: "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.mailbox.ONLY_ADMIN" },
+    {
+      name: `${NAMESPACES[client.phase as keyof IDomains]}.mailbox.ONLY_ADMIN`,
+    },
   ];
   const result = await submitSignedTxWithCap(
     client,
@@ -36,12 +39,14 @@ export const unpauseKDA = async (
   sender: IAccountWithKeys,
   account: IAccountWithKeys,
 ) => {
-  const command = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+  const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
       (mailbox.unpause)`;
 
   const capabilities: ICapability[] = [
     { name: "coin.GAS" },
-    { name: "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.mailbox.ONLY_ADMIN" },
+    {
+      name: `${NAMESPACES[client.phase as keyof IDomains]}.mailbox.ONLY_ADMIN`,
+    },
   ];
   const result = await submitSignedTxWithCap(
     client,
