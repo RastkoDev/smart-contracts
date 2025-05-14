@@ -16,7 +16,7 @@ import {
   submitSignedTxWithCap,
   submitReadTx,
 } from "../../utils/submit-tx";
-import { EVM_DOMAINS } from "../../utils/constants";
+import { EVM_DOMAINS, NAMESPACES } from "../../utils/constants";
 
 const folderPrefix = "../../../../pact/";
 
@@ -45,7 +45,7 @@ export const setupGasOracle = async (
     gasPrice: "0.000000046",
   };
 
-  const initCommand = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+  const initCommand = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
   (gas-oracle.set-remote-gas-data
     {
         "domain": ${remoteGasData.domain},
@@ -57,7 +57,7 @@ export const setupGasOracle = async (
   const capabilities: ICapability[] = [
     { name: "coin.GAS" },
     {
-      name: "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.gas-oracle.ONLY_ORACLE_ADMIN",
+      name: `${NAMESPACES[client.phase as keyof IDomains]}.gas-oracle.ONLY_ORACLE_ADMIN`,
     },
   ];
 
@@ -112,10 +112,10 @@ export const deployValidatorAnnounce = async (
   console.log("\nDeploying ValidatorAnnounce");
   console.log(result);
 
-  let initCommand: string = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+  let initCommand: string = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
   (validator-announce.announce "${validatorCfg[0].validator}" "${validatorCfg[0].storageLocation}" "${validatorCfg[0].signature}")`;
   if (client.phase === "mainnet") {
-    initCommand = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+    initCommand = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
   (validator-announce.announce "${validatorCfg[0].validator}" "${validatorCfg[0].storageLocation}" "${validatorCfg[0].signature}")
   (validator-announce.announce "${validatorCfg[1].validator}" "${validatorCfg[1].storageLocation}" "${validatorCfg[1].signature}")
   (validator-announce.announce "${validatorCfg[2].validator}" "${validatorCfg[2].storageLocation}" "${validatorCfg[2].signature}")`;
@@ -124,7 +124,7 @@ export const deployValidatorAnnounce = async (
   const capabilities: ICapability[] = [
     { name: "coin.GAS" },
     {
-      name: "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.validator-announce.ONLY_ADMIN",
+      name: `${NAMESPACES[client.phase as keyof IDomains]}.validator-announce.ONLY_ADMIN`,
     },
   ];
 
@@ -172,12 +172,12 @@ export const deployISM = async (
     validatorsString += `"${validator}"`;
   });
 
-  const initCommand = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+  const initCommand = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
     (merkle-tree-ism.initialize [${validatorsString}] ${multisigISMCfg.threshold})`;
   const capabilities: ICapability[] = [
     { name: "coin.GAS" },
     {
-      name: "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.merkle-tree-ism.ONLY_ADMIN",
+      name: `${NAMESPACES[client.phase as keyof IDomains]}.merkle-tree-ism.ONLY_ADMIN`,
     },
   ];
 
@@ -205,14 +205,14 @@ export const deployISMRouting = async (
   console.log("\nDeploying ISM Routing");
   console.log(result);
 
-  const initCommand = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+  const initCommand = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
     (domain-routing-ism.initialize [${
       EVM_DOMAINS[client.phase as keyof IDomains]
     }] [merkle-tree-ism])`;
   const capabilities: ICapability[] = [
     { name: "coin.GAS" },
     {
-      name: "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.domain-routing-ism.ONLY_ADMIN",
+      name: `${NAMESPACES[client.phase as keyof IDomains]}.domain-routing-ism.ONLY_ADMIN`,
     },
   ];
 
@@ -242,13 +242,13 @@ export const deployIGP = async (
   console.log("\nDeploying IGP");
   console.log(result);
 
-  const initCommand = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+  const initCommand = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
       (igp.initialize)
       (igp.set-remote-gas-amount {"domain": ${remoteGasAmount.domain}, "gas-amount": ${remoteGasAmount.gasAmount}})`;
 
   const capabilities: ICapability[] = [
     { name: "coin.GAS" },
-    { name: "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.igp.ONLY_ADMIN" },
+    { name: `${NAMESPACES[client.phase as keyof IDomains]}.igp.ONLY_ADMIN` },
   ];
   const initResult = await submitSignedTxWithCap(
     client,
@@ -274,13 +274,13 @@ export const deployMerkleTreeHook = async (
   console.log("\nDeploying Merkle Tree Hook");
   console.log(result);
 
-  const initCommand = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+  const initCommand = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
       (merkle-tree-hook.initialize)`;
 
   const capabilities: ICapability[] = [
     { name: "coin.GAS" },
     {
-      name: "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.merkle-tree-hook.ONLY_ADMIN",
+      name: `${NAMESPACES[client.phase as keyof IDomains]}.merkle-tree-hook.ONLY_ADMIN`,
     },
   ];
   const initResult = await submitSignedTxWithCap(
@@ -298,7 +298,7 @@ export const defineHook = async (
   sender: IAccountWithKeys,
   account: IAccountWithKeys,
 ) => {
-  const initCommand = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+  const initCommand = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
       (mailbox.define-hook merkle-tree-hook)`;
 
   const capabilities: ICapability[] = [{ name: "coin.GAS" }];
@@ -322,12 +322,14 @@ export const deployMailbox = async (
   console.log("\nDeploying Mailbox");
   console.log(result);
 
-  const initCommand = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+  const initCommand = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
       (mailbox.initialize)`;
 
   const capabilities: ICapability[] = [
     { name: "coin.GAS" },
-    { name: "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.mailbox.ONLY_ADMIN" },
+    {
+      name: `${NAMESPACES[client.phase as keyof IDomains]}.mailbox.ONLY_ADMIN`,
+    },
   ];
   const initResult = await submitSignedTxWithCap(
     client,
@@ -391,7 +393,7 @@ export const deployFaucet = async (
   console.log("\nDeploying Faucet");
   console.log(result);
 
-  const readCommand = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf") (coin-faucet.get-faucet-account)`;
+  const readCommand = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}") (coin-faucet.get-faucet-account)`;
   const faucetAccount = (await submitReadTx(
     client,
     readCommand,
@@ -399,7 +401,7 @@ export const deployFaucet = async (
 
   const amount = "30";
 
-  const command = `(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf") (coin.transfer "${sender.name}" "${faucetAccount.data}" ${amount}.0)`;
+  const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}") (coin.transfer "${sender.name}" "${faucetAccount.data}" ${amount}.0)`;
   const capabilities: ICapability[] = [
     { name: "coin.GAS" },
     {

@@ -3,12 +3,19 @@ import {
   IAccountWithKeys,
   IClientWithData,
   IDomains,
+  INamespaces,
   INetworks,
   IUrls,
 } from "./interfaces";
 import { defineChain } from "viem";
 import dotenv from "dotenv";
 dotenv.config();
+
+export const NAMESPACES: INamespaces = {
+  devnet: "n_9b079bebc8a0d688e4b2f4279a114148d6760edf",
+  testnet: "n_21bfb994661266c50e743622e5372a0ccd24f67c",
+  mainnet: "n_e595727b657fbbb3b8e362a05a7bb8d12865c1ff",
+};
 
 const KDA_CHAINS: number[] = [2, 4];
 export const MAX_KDA_CHAIN = 19;
@@ -40,8 +47,6 @@ const EVM_URLS: IUrls = {
   testnet: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
   mainnet: `https://ethereum-mainnet.core.chainstack.com/${process.env.CHAINSTACK_KEY}`,
 };
-
-//console.log("**********EVM_URLS**********", EVM_URLS);
 
 const KDA_URLS: IUrls = {
   devnet: "http://kadena:8080/chainweb/0.0",
@@ -100,21 +105,15 @@ const keys1: IKeyPair = {
   secretKey: `${process.env.KEY1_SECRET}`,
 };
 
-//console.log("******** keys1 ********", keys1);
-
 const keys2: IKeyPair = {
   publicKey: `${process.env.KEY2_PUBLIC}`,
   secretKey: `${process.env.KEY2_SECRET}`,
 };
 
-//console.log("******** keys2 ********", keys2);
-
 const keys3: IKeyPair = {
   publicKey: `${process.env.KEY3_PUBLIC}`,
   secretKey: `${process.env.KEY3_SECRET}`,
 };
-
-//console.log("******** keys3 ********", keys3);
 
 // test keys
 const keyst: IKeyPair = {

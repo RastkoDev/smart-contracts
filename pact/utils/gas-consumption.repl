@@ -2,7 +2,7 @@
 
 ;; quote-gas-payment
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (print "\nquote-gas-payment")
 (env-gasmodel "table")
 (env-gaslimit 150000)
@@ -16,7 +16,7 @@
 
 ;; quote-dispatch
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (print "\nquote-gas-payment")
 (env-gasmodel "table")
 (env-gaslimit 150000)
@@ -30,7 +30,7 @@
 
 ;; dispatch hyp-erc20-collateral
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (print "\ndispatch hyp-erc20-collateral")
 (env-gasmodel "table")
 (env-gaslimit 150000)
@@ -54,7 +54,7 @@
 
 ;; process hyp-erc20-collateral same chain
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message)
 (env-chain-data { "chain-id": "0"})
 (print "\nprocess hyp-erc20-collateral same chain")
@@ -84,7 +84,7 @@
 
 ;; process hyp-erc20-collateral cross chain
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message)
 (env-chain-data { "chain-id": "0"})
 (print "\nprocess hyp-erc20-collateral cross chain")
@@ -114,7 +114,7 @@
 
 ;; process hyp-erc20 same chain
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message)
 (env-chain-data { "chain-id": "0"})
 (print "\nprocess hyp-erc20 same chain")
@@ -144,7 +144,7 @@
 
 ;; process hyp-erc20 cross chain
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message)
 (env-chain-data { "chain-id": "0"})
 (print "\nprocess hyp-erc20 cross chain")
@@ -174,7 +174,7 @@
 
 ;; dispatch hyp-erc20
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (print "\ndispatch hyp-erc20")
 (env-gasmodel "table")
 (env-gaslimit 150000)

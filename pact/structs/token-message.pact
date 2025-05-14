@@ -1,4 +1,4 @@
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 
 (interface token-message
     

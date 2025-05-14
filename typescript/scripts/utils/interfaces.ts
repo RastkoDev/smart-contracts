@@ -24,6 +24,12 @@ export interface IRouteObject {
   [key: string]: IRoute;
 }
 
+export interface INamespaces {
+  devnet: string;
+  testnet: string;
+  mainnet: string;
+}
+
 export interface INetworks {
   devnet: string;
   testnet: string;

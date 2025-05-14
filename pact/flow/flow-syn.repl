@@ -2,14 +2,14 @@
 
 ;; Create an account for recipient and fund it
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [{ "key": data.recipient-key, "caps": [] }])
-(hyp-erc20.create-account data.recipient (describe-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.recipient"))
+(hyp-erc20.create-account data.recipient (describe-keyset "NAMESPACE.recipient"))
 (commit-tx)
 
 ;; Process the incoming tx
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message [hyperlane-message])
 
 (env-chain-data { "block-height": 5 })
@@ -39,7 +39,7 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-chain-data { "chain-id" : "1" })
 (continue-pact 1 false (hash "crosschain-step-1"))
 (print (format "Recipient balance after the process {}" [(hyp-erc20.get-balance data.recipient)]))
@@ -47,7 +47,7 @@
 
 ;; Transfer the tokens from chain 1 to chain 0
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-chain-data { "chain-id" : "1" })
 (env-hash (hash "xchain"))
 (env-sigs [ { "key": data.recipient-key, "caps": [ (hyp-erc20.TRANSFER_XCHAIN data.recipient data.recipient 55.0 "0") ] } ])
@@ -64,14 +64,14 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-chain-data { "chain-id" : "0" })
 (continue-pact 1 false (hash "xchain"))
 (commit-tx)
 
 ;; Transfer the message to the remote
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-chain-data { "sender": data.recipient })
 
 (env-sigs [ { "key": data.recipient-key, "caps": [ 

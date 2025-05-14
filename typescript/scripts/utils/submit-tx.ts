@@ -16,6 +16,7 @@ import {
 } from "./interfaces";
 import * as fs from "fs";
 import { KDA_NETWORKS } from "./constants";
+import { createNamespaceFile } from "../generator/generate-modules";
 
 export const submitSignedTx = async (
   client: IClientWithData,
@@ -203,7 +204,8 @@ export const deployModuleDirectly = async (
   keyset: IAccountWithKeys,
   file: string,
 ) => {
-  return await submitDeployContract(client, sender, keyset, file);
+  const resultFile = await createNamespaceFile(client, file);
+  return await submitDeployContract(client, sender, keyset, resultFile);
 };
 
 export const upgradeModuleDirectly = async (
@@ -212,7 +214,8 @@ export const upgradeModuleDirectly = async (
   keyset: IAccountWithKeys,
   file: string,
 ) => {
-  return await submitUpgradeContract(client, sender, keyset, file);
+  const resultFile = await createNamespaceFile(client, file);
+  return await submitUpgradeContract(client, sender, keyset, resultFile);
 };
 
 export const deployModule = async (
@@ -222,7 +225,8 @@ export const deployModule = async (
   fileName: string,
 ) => {
   const file = (await fs.promises.readFile(fileName)).toString();
-  return await submitDeployContract(client, sender, keyset, file);
+  const resultFile = await createNamespaceFile(client, file);
+  return await submitDeployContract(client, sender, keyset, resultFile);
 };
 
 export const upgradeModule = async (
@@ -232,7 +236,8 @@ export const upgradeModule = async (
   fileName: string,
 ) => {
   const file = (await fs.promises.readFile(fileName)).toString();
-  return await submitUpgradeContract(client, sender, keyset, file);
+  const resultFile = await createNamespaceFile(client, file);
+  return await submitUpgradeContract(client, sender, keyset, resultFile);
 };
 
 const signTx = async (

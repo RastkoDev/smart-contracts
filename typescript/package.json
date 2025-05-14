@@ -33,7 +33,6 @@
     "unpause:testnet": "npx hardhat unpause ../../kinesis-deploy/tmp/artifacts/core-deployment.json testnet --network sepolia",
     "unpause:mainnet": "npx hardhat unpause ../../kinesis-deploy/tmp/artifacts/core-deployment.json mainnet --network ethereum",
     "mock": "ts-node ./scripts/mocks/run-mock.ts",
-    "generate": "ts-node ./scripts/generator/generate-modules.ts",
     "solhint": "solhint contracts/**/*.sol"
   },
   "dependencies": {

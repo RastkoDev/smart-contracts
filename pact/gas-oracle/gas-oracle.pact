@@ -1,8 +1,8 @@
 ;; StorageGasOracle
 
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 
-(enforce-guard (keyset-ref-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+(enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 ;; Gas Oracle module stores data needed for determining transaction price
 ;; on another chain. The values are passed to InterchainGasPayment module (IGP).
@@ -15,9 +15,9 @@
   (deftable gas-data-table:{remote-gas-data})
   
   ;; Capabilities
-  (defcap GOVERNANCE () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.upgrade-admin"))
+  (defcap GOVERNANCE () (enforce-guard "NAMESPACE.upgrade-admin"))
 
-  (defcap ONLY_ORACLE_ADMIN () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.gas-oracle-admin"))
+  (defcap ONLY_ORACLE_ADMIN () (enforce-guard "NAMESPACE.gas-oracle-admin"))
 
   ;; Events
   (defcap REMOTE_GAS_DATA_SET
@@ -61,7 +61,7 @@
 )
   
 (if (read-msg "init")
-  [ (create-table n_9b079bebc8a0d688e4b2f4279a114148d6760edf.gas-oracle.gas-data-table) ]
+  [ (create-table NAMESPACE.gas-oracle.gas-data-table) ]
   "Upgrade complete")
 
   

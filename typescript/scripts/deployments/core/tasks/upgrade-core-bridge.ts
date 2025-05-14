@@ -5,7 +5,6 @@ import {
   ua_account,
 } from "../../../utils/constants";
 import {
-  upgradeEmptyMailbox,
   upgradeFaucet,
   upgradeGasOracle,
   upgradeGasStation,
