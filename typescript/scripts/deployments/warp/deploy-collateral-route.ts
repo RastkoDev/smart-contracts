@@ -4,6 +4,7 @@ import {
   ba_account,
   getClientDatas,
   MAX_KDA_CHAIN,
+  NAMESPACES,
 } from "../../utils/constants";
 import {
   getRouterHash,
@@ -11,7 +12,7 @@ import {
   enrollRemoteRouter,
   deployHypERC20Coll,
 } from "./deploy-warp-modules";
-import { IRoute, TokenType, TxData } from "../../utils/interfaces";
+import { IDomains, IRoute, TokenType, TxData } from "../../utils/interfaces";
 import { hexToBase64 } from "./warp-utils";
 import delay from "delay";
 
@@ -103,11 +104,11 @@ export const deployCollateralWarpRoute = async (
   return {
     [domainEVM]: {
       address: hypERC20.address,
-      symbol: tokenSymbolEVM,
+      symbol: tokenSymbolEVM as string,
       type: TokenType.Synthetic,
     },
     [domainKDA]: {
-      address: `n_9b079bebc8a0d688e4b2f4279a114148d6760edf.${tokenSymbolKDA}`,
+      address: `${NAMESPACES[phase as keyof IDomains]}.${tokenSymbolKDA}`,
       symbol: tokenSymbolKDA,
       type: TokenType.Collateral,
     },

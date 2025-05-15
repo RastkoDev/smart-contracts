@@ -23,7 +23,7 @@
 ;;  only relays data about `validators` and `threshold` from Validator Announce to Mailbox 
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../ism/merkle-tree-ism.pact")
@@ -32,7 +32,7 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../ism/domain-routing-ism.pact")
@@ -44,7 +44,7 @@
 ;; messages to destination chains and includes the gas overhead per destination
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../igp/igp.pact")
@@ -56,7 +56,7 @@
 ;; relayer and validators. Also, it processes incoming messages. Firstly, it validates  using `verify-spv` function.
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../mailbox/mailbox.pact")
@@ -67,7 +67,7 @@
 ;; Merkle Tree Hook inserts current MessageId inside the MerkleTree.
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../merkle/merkle-tree-hook.pact")
@@ -76,6 +76,6 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (mailbox.define-hook merkle-tree-hook)
 (commit-tx)

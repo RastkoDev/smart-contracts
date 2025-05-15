@@ -1,8 +1,8 @@
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 
-(enforce-guard (keyset-ref-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+(enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
-(module <name> GOVERNANCE
+(module SYMBOL GOVERNANCE
   (implements fungible-v2)
   (implements router-iface)
 
@@ -16,8 +16,9 @@
   (deftable routers:{router-address})
 
   ;; Capabilities
-  (defcap GOVERNANCE () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.upgrade-admin"))
-  (defcap ONLY_ADMIN () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+  (defcap GOVERNANCE () (enforce-guard "NAMESPACE.upgrade-admin"))
+  (defcap ONLY_ADMIN () (enforce-guard "NAMESPACE.bridge-admin"))
+
   (defcap INTERNAL () true)
 
   (defcap TRANSFER_REMOTE:bool 
@@ -56,7 +57,7 @@
     @event true
   )
 
-  (defun precision:integer () <precision>)
+  (defun precision:integer () PRECISION)
 
   (defun get-adjusted-amount:decimal (amount:decimal) 
     (* amount (dec (^ 10 (precision))))
@@ -385,7 +386,7 @@
 
 (if (read-msg "init")
   [
-    (create-table n_9b079bebc8a0d688e4b2f4279a114148d6760edf.<name>.accounts)
-    (create-table n_9b079bebc8a0d688e4b2f4279a114148d6760edf.<name>.routers)
+    (create-table NAMESPACE.SYMBOL.accounts)
+    (create-table NAMESPACE.SYMBOL.routers)
   ]
   "Upgrade complete")

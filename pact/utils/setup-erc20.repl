@@ -4,7 +4,7 @@
 ;; Let's set up all the necessary data for the contracts
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 
 ;; Initialize the HypERC20
 ;; The remote router is just some dummy address

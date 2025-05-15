@@ -9,7 +9,7 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../ism/merkle-tree-ism.pact")
@@ -18,7 +18,7 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../ism/domain-routing-ism.pact")
@@ -27,7 +27,7 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../igp/igp.pact")
@@ -36,7 +36,7 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../mailbox/mailbox.pact")
@@ -44,7 +44,7 @@
 (print "\nLoaded Mailbox")
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../merkle/merkle-tree-hook.pact")
@@ -53,7 +53,7 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (gas-oracle.ONLY_ORACLE_ADMIN) ] } ])
 (gas-oracle.set-remote-gas-data-configs [
 {
@@ -72,20 +72,20 @@
 
 ;; initialize
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (mailbox.ONLY_ADMIN) ] } ])
 (mailbox.initialize)
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../hyp-erc20/hyp-erc20.pact")
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../hyp-erc20-collateral/hyp-erc20-collateral.pact")
@@ -94,7 +94,7 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (hyp-erc20.ONLY_ADMIN) ] } ])
 (hyp-erc20.enroll-remote-router data.eth-domain data.eth-router)
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (hyp-erc20-collateral.ONLY_ADMIN) ] } ])
@@ -103,13 +103,13 @@
 
 ;; define-hook
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (mailbox.define-hook merkle-tree-hook)
 (commit-tx)
 
 ;; store-router
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (mailbox.ONLY_ADMIN) ] } ])
 (mailbox.store-router hyp-erc20-collateral)
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (mailbox.ONLY_ADMIN) ] } ])
@@ -118,13 +118,13 @@
 
 ;;quote-dispatch
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Quoted 1 KDA" 1.0 (mailbox.quote-dispatch data.eth-domain))
 (commit-tx)
 
 ;; pause ;; fail capability ONLY_ADMIN
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Not paused" false (mailbox.paused))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [] } ])
 (expect-failure "Cannot interact with mailbox directly" (mailbox.pause))
@@ -133,7 +133,7 @@
 
 ;; pause ; success
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Not paused" false (mailbox.paused))
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (mailbox.ONLY_ADMIN) ] } ])
 (mailbox.pause)
@@ -142,7 +142,7 @@
 
 ;; pause ;; fail already paused
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Paused" true (mailbox.paused))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [] } ])
 (expect-failure "Already paused" (mailbox.pause))
@@ -151,7 +151,7 @@
 
 ;; process ;; fail bridge paused
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message [hyperlane-message])
 
 (env-chain-data { "block-height": 5 })
@@ -180,7 +180,7 @@
 
 ;; unpause ;; fail capability ONLY_ADMIN
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Paused" true (mailbox.paused))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [] } ])
 (expect-failure "Cannot interact with mailbox directly" (mailbox.unpause))
@@ -189,7 +189,7 @@
 
 ;; unpause ; success
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Paused" true (mailbox.paused))
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (mailbox.ONLY_ADMIN) ] } ])
 (mailbox.unpause)
@@ -198,7 +198,7 @@
 
 ;; unpause ;; fail already unpaused
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Not paused" false (mailbox.paused))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [] } ])
 (expect-failure "Already unpaused" (mailbox.unpause))
@@ -207,7 +207,7 @@
 
 ;; dispatch ;; success hyp-erc20-collateral
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Nonce before the dispatch" 0 (mailbox.nonce))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [ 
     (coin.TRANSFER 
@@ -228,7 +228,7 @@
 
 ;; process ;; fail wrong chain id
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message [hyperlane-message])
 
 (env-chain-data { "block-height": 5 })
@@ -257,7 +257,7 @@
 
 ;; process ;; success hyp-erc20
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message [hyperlane-message])
 
 (env-chain-data { "block-height": 5 })
@@ -286,7 +286,7 @@
 
 ;; process ;; success hyp-erc20-collateral
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message [hyperlane-message])
 
 (env-chain-data { "block-height": 5 })
@@ -315,7 +315,7 @@
 
 ;; process ;; fail already delivered
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message [hyperlane-message])
 
 (env-chain-data { "block-height": 5 })
@@ -354,7 +354,7 @@
 
 ;; dispatch ;; success hyp-erc20
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (expect "Nonce before the dispatch" 1 (mailbox.nonce))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [ 
     (hyp-erc20.TRANSFER_REMOTE data.eth-domain bridge-keys.alice-principal bridge-keys.alice 10.0)
@@ -366,7 +366,7 @@
 (commit-tx)
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (use hyperlane-message [hyperlane-message])
 
 (env-chain-data {"block-height": 10, "chain-id": "0"})

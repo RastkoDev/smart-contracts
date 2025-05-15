@@ -1,12 +1,12 @@
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 
-(enforce-guard (keyset-ref-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+(enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 (module merkle GOVERNANCE
 
-    (defcap GOVERNANCE () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.upgrade-admin"))
+    (defcap GOVERNANCE () (enforce-guard "NAMESPACE.upgrade-admin"))
 
-    (defcap ONLY_ADMIN () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+    (defcap ONLY_ADMIN () (enforce-guard "NAMESPACE.bridge-admin"))
     
     (defconst TREE_DEPTH 32)
     (defconst MAX_LEAVES (- (^ 2 TREE_DEPTH) 1))
@@ -190,6 +190,6 @@
 
 (if (read-msg "init")
   [
-    (create-table n_9b079bebc8a0d688e4b2f4279a114148d6760edf.merkle.tree-state)
+    (create-table NAMESPACE.merkle.tree-state)
   ]
   "Upgrade complete")

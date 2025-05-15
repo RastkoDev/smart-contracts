@@ -5,21 +5,20 @@ import {
   ua_account,
 } from "../../../utils/constants";
 import {
-  upgradeFaucet,
-  upgradeGasOracle,
-  upgradeGasStation,
-  upgradeIGP,
-  upgradeISM,
-  upgradeISMRouting,
-  upgradeMailbox,
-  upgradeMerkleTreeHook,
-  upgradeValidatorAnnounce,
-} from "../upgrade-core-module";
+  verifyGasOracle,
+  verifyGasStation,
+  verifyIGP,
+  verifyISM,
+  verifyISMRouting,
+  verifyMailbox,
+  verifyMerkleTreeHook,
+  verifyValidatorAnnounce,
+} from "../verify-core-modules";
 
-task("upgrade-core", "Upgrade Core Bridge")
+task("verify-core", "Verify Core Bridge")
   .addPositionalParam("phase")
   .setAction(async (taskArgs) => {
-    console.log("Upgrading Core Bridge");
+    console.log("Verifying Core Bridge");
 
     const clientDatas = getClientDatas(taskArgs.phase);
 
@@ -28,12 +27,12 @@ task("upgrade-core", "Upgrade Core Bridge")
     );
 
     for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = upgradeGasOracle(clientDatas[i], ba_account, ua_account);
+      promises[i] = verifyGasOracle(clientDatas[i], ba_account, ua_account);
     }
     await Promise.all(promises);
 
     for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = upgradeValidatorAnnounce(
+      promises[i] = verifyValidatorAnnounce(
         clientDatas[i],
         ba_account,
         ua_account,
@@ -42,26 +41,27 @@ task("upgrade-core", "Upgrade Core Bridge")
     await Promise.all(promises);
 
     for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = upgradeISM(clientDatas[i], ba_account, ua_account);
+      promises[i] = verifyISM(clientDatas[i], ba_account, ua_account);
     }
     await Promise.all(promises);
 
     for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = upgradeISMRouting(clientDatas[i], ba_account, ua_account);
+      promises[i] = verifyISMRouting(clientDatas[i], ba_account, ua_account);
     }
     await Promise.all(promises);
 
     for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = upgradeIGP(clientDatas[i], ba_account, ua_account);
-    }
-    await Promise.all(promises);
-    for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = upgradeMailbox(clientDatas[i], ba_account, ua_account);
+      promises[i] = verifyIGP(clientDatas[i], ba_account, ua_account);
     }
     await Promise.all(promises);
 
     for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = upgradeMerkleTreeHook(
+      promises[i] = verifyMailbox(clientDatas[i], ba_account, ua_account);
+    }
+    await Promise.all(promises);
+
+    for (let i: number = 0; i < clientDatas.length; i++) {
+      promises[i] = verifyMerkleTreeHook(
         clientDatas[i],
         ba_account,
         ua_account,
@@ -70,14 +70,7 @@ task("upgrade-core", "Upgrade Core Bridge")
     await Promise.all(promises);
 
     for (let i: number = 0; i < clientDatas.length; i++) {
-      promises[i] = upgradeGasStation(clientDatas[i], ba_account, ua_account);
+      promises[i] = verifyGasStation(clientDatas[i], ba_account, ua_account);
     }
     await Promise.all(promises);
-
-    if (taskArgs.phase !== "mainnet") {
-      for (let i: number = 0; i < clientDatas.length; i++) {
-        promises[i] = upgradeFaucet(clientDatas[i], ba_account, ua_account);
-      }
-      await Promise.all(promises);
-    }
   });

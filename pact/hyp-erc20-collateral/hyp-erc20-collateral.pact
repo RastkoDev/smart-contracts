@@ -1,6 +1,6 @@
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 
-(enforce-guard (keyset-ref-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+(enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 (module hyp-erc20-collateral GOVERNANCE
   (implements router-iface)
@@ -15,8 +15,9 @@
   (deftable routers:{router-address})
 
   ;; Capabilities
-  (defcap GOVERNANCE () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.upgrade-admin"))
-  (defcap ONLY_ADMIN () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+  (defcap GOVERNANCE () (enforce-guard "NAMESPACE.upgrade-admin"))
+  (defcap ONLY_ADMIN () (enforce-guard "NAMESPACE.bridge-admin"))
+
   (defcap INTERNAL () true)
 
   (defcap TRANSFER_REMOTE:bool 
@@ -215,7 +216,7 @@
 
 (if (read-msg "init")
   [
-    (create-table n_9b079bebc8a0d688e4b2f4279a114148d6760edf.hyp-erc20-collateral.contract-state)
-    (create-table n_9b079bebc8a0d688e4b2f4279a114148d6760edf.hyp-erc20-collateral.routers)
+    (create-table NAMESPACE.hyp-erc20-collateral.contract-state)
+    (create-table NAMESPACE.hyp-erc20-collateral.routers)
   ]
   "Upgrade complete")

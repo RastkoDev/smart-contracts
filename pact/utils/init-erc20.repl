@@ -4,7 +4,7 @@
 ;; Hyp-ERC20 is a fungible-v2 tokens on the Kadena chain
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../hyp-erc20/hyp-erc20.pact")
@@ -13,7 +13,7 @@
 ;; Hyp-ERC20 is a fungible-v2 tokens on the Kadena chain
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-data { "init": true })
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [] } ])
 (load "../hyp-erc20-collateral/hyp-erc20-collateral.pact")

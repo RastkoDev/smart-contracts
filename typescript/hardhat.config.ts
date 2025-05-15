@@ -12,9 +12,15 @@ import "./scripts/deployments/warp/tasks/deploy-warp-route.ts";
 import "./scripts/deployments/warp/tasks/upgrade-warp-route.ts";
 import "./scripts/deployments/pause/tasks/pause.ts";
 import "./scripts/deployments/pause/tasks/unpause.ts";
+import "./scripts/deployments/verify/tasks/verify-core-bridge.ts";
+import "./scripts/deployments/verify/tasks/verify-warp-route.ts";
 
 import dotenv from "dotenv";
 dotenv.config();
+
+const privateKey =
+  process.env.PRIVATE_KEY ||
+  "0x78c171ee07a367fe1edcdb0a47abb5f37fe566e10516494217b0bbab2b7d4584";
 
 const config: HardhatUserConfig = {
   solidity: {
@@ -31,22 +37,28 @@ const config: HardhatUserConfig = {
     localhost: {
       chainId: 31337,
       allowUnlimitedContractSize: true,
+      url: "http://anvil:8545",
+      accounts: [privateKey],
     },
     sepolia: {
       url: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
       chainId: 11155111,
+      accounts: [privateKey],
     },
     ethereum: {
       url: `https://eth-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_KEY}`,
       chainId: 1,
+      accounts: [privateKey],
     },
     moonbaseAlpha: {
       url: "https://rpc.api.moonbase.moonbeam.network",
       chainId: 1287,
+      accounts: [privateKey],
     },
     polygonMumbai: {
       url: "https://rpc.ankr.com/polygon_mumbai",
       chainId: 80001,
+      accounts: [privateKey],
     },
   },
   etherscan: {

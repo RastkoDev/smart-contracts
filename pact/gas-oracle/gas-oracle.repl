@@ -9,7 +9,7 @@
 
 ;set-remote-gas-data: failure
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": "default_key", "caps": [ (gas-oracle.ONLY_ORACLE_ADMIN) ] } ])
 (expect-failure "Can only be called by admin" 
     (gas-oracle.set-remote-gas-data-configs [
@@ -29,7 +29,7 @@
 
 ;set-remote-gas-data-configs: success
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (gas-oracle.ONLY_ORACLE_ADMIN) ] } ])
 (gas-oracle.set-remote-gas-data-configs [
     {
@@ -63,7 +63,7 @@
 
 ;set-remote-gas-data-configs: success twice
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (gas-oracle.ONLY_ORACLE_ADMIN) ] } ])
 (gas-oracle.set-remote-gas-data-configs [
     {
@@ -97,7 +97,7 @@
 
 ;set-remote-gas-data: failure
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": "default_key", "caps": [ (gas-oracle.ONLY_ORACLE_ADMIN) ] } ])
 (expect-failure "Can only be called by admin" 
     (gas-oracle.set-remote-gas-data 
@@ -112,7 +112,7 @@
 
 ;set-remote-gas-data: success
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (gas-oracle.ONLY_ORACLE_ADMIN) ] } ])
 (expect "GasOracle sets gas data" true
     (gas-oracle.set-remote-gas-data 
@@ -135,7 +135,7 @@
 
 ;set-remote-gas-data: success twice
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 (env-sigs [ { "key": bridge-keys.bridge, "caps": [ (gas-oracle.ONLY_ORACLE_ADMIN) ] } ])
 (expect "GasOracle sets gas data" true
     (gas-oracle.set-remote-gas-data 

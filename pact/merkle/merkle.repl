@@ -9,7 +9,7 @@
 
 
 (begin-tx)
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 
 (merkle.initialize)
 (merkle.insert-node "rTIotnb3081ChKVEPxfxlis25JGzCkCyQFhJ5Ze6X7U")

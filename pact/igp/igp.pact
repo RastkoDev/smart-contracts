@@ -1,8 +1,8 @@
 ;; InterchainGasPaymaster
 
-(namespace "n_9b079bebc8a0d688e4b2f4279a114148d6760edf")
+(namespace "NAMESPACE")
 
-(enforce-guard (keyset-ref-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+(enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 ;; Manages payments on a source chain to cover gas costs of relaying
 ;; messages to destination chains and includes the gas overhead per destination
@@ -18,9 +18,9 @@
   (deftable gas-amount-table:{remote-gas-amount})
 
   ;; Capabilities
-  (defcap GOVERNANCE () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.upgrade-admin"))
+  (defcap GOVERNANCE () (enforce-guard "NAMESPACE.upgrade-admin"))
 
-  (defcap ONLY_ADMIN () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+  (defcap ONLY_ADMIN () (enforce-guard "NAMESPACE.bridge-admin"))
 
   ;; Events
   (defcap GAS_PAYMENT
@@ -37,11 +37,11 @@
   ;; Treasury 
   (defconst IGP_ACCOUNT 
     (create-principal 
-      (keyset-ref-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin")
+      (keyset-ref-guard "NAMESPACE.bridge-admin")
       ))
 
   (defun initialize ()
-    (coin.create-account IGP_ACCOUNT (keyset-ref-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-admin"))
+    (coin.create-account IGP_ACCOUNT (keyset-ref-guard "NAMESPACE.bridge-admin"))
   )
 
   (defun set-remote-gas-amount (config:object{remote-gas-amount-input})
@@ -111,8 +111,8 @@
 
 (if (read-msg "init")
   [ 
-    (create-table n_9b079bebc8a0d688e4b2f4279a114148d6760edf.igp.contract-state)
-    (create-table n_9b079bebc8a0d688e4b2f4279a114148d6760edf.igp.gas-amount-table)
+    (create-table NAMESPACE.igp.contract-state)
+    (create-table NAMESPACE.igp.gas-amount-table)
   ]
   "Upgrade complete")
   
