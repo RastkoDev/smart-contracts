@@ -12,6 +12,8 @@ import "./scripts/deployments/warp/tasks/deploy-warp-route.ts";
 import "./scripts/deployments/warp/tasks/upgrade-warp-route.ts";
 import "./scripts/deployments/pause/tasks/pause.ts";
 import "./scripts/deployments/pause/tasks/unpause.ts";
+import "./scripts/deployments/verify/tasks/verify-core-bridge.ts";
+import "./scripts/deployments/verify/tasks/verify-warp-route.ts";
 
 import dotenv from "dotenv";
 dotenv.config();

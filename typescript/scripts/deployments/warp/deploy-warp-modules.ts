@@ -48,6 +48,7 @@ export const deployHypERC20Coll = async (
 ) => {
   const file = await getCollateralFile();
   const resultCol = await createTokenFile(file, name, precision.toString());
+
   const result = await deployModuleDirectly(client, sender, account, resultCol);
   console.log(`\nDeploying ${name}`);
   console.log(result);

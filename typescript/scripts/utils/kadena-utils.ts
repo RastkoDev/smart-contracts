@@ -6,6 +6,7 @@ import {
   IDomains,
 } from "./interfaces";
 import {
+  submitReadTx,
   submitSignedTx,
   submitSignedTxWithCap,
   submitSignedTxWithCapWithData,
@@ -189,4 +190,15 @@ export const fundGasStation = async (
   );
   console.log("\nFunding GasStation");
   console.log(result);
+};
+
+export const getDeployedHash = async (
+  client: IClientWithData,
+  moduleName: string,
+) => {
+  const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
+  (at "hash" (describe-module "${NAMESPACES[client.phase as keyof IDomains]}.${moduleName}"))`;
+
+  const result = await submitReadTx(client, command);
+  return result;
 };
