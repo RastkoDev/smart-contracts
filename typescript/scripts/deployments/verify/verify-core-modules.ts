@@ -4,7 +4,7 @@ import { verifyModule } from "../../utils/submit-tx";
 export const verifyGasOracle = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys
+  keyset: IAccountWithKeys,
 ) => {
   const moduleFolder = "gas-oracle";
   const moduleName = "gas-oracle";
@@ -14,7 +14,7 @@ export const verifyGasOracle = async (
     sender,
     keyset,
     moduleFolder,
-    moduleName
+    moduleName,
   );
   console.log("\nVerifiying GasOracle");
   console.log(result);
@@ -23,7 +23,7 @@ export const verifyGasOracle = async (
 export const verifyValidatorAnnounce = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys
+  keyset: IAccountWithKeys,
 ) => {
   const moduleFolder = "validator-announce";
   const moduleName = "validator-announce";
@@ -33,7 +33,7 @@ export const verifyValidatorAnnounce = async (
     sender,
     keyset,
     moduleFolder,
-    moduleName
+    moduleName,
   );
   console.log("\nVerifiying ValidatorAnnounce");
   console.log(result);
@@ -42,7 +42,7 @@ export const verifyValidatorAnnounce = async (
 export const verifyISM = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys
+  keyset: IAccountWithKeys,
 ) => {
   const moduleFolder = "ism";
   const moduleName = "merkle-tree-ism";
@@ -52,7 +52,7 @@ export const verifyISM = async (
     sender,
     keyset,
     moduleFolder,
-    moduleName
+    moduleName,
   );
   console.log("\nVerifiying ISM");
   console.log(result);
@@ -61,7 +61,7 @@ export const verifyISM = async (
 export const verifyISMRouting = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys
+  keyset: IAccountWithKeys,
 ) => {
   const moduleFolder = "ism";
   const moduleName = "domain-routing-ism";
@@ -71,7 +71,7 @@ export const verifyISMRouting = async (
     sender,
     keyset,
     moduleFolder,
-    moduleName
+    moduleName,
   );
   console.log("\nVerifiying ISM Routing");
   console.log(result);
@@ -80,7 +80,7 @@ export const verifyISMRouting = async (
 export const verifyIGP = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys
+  keyset: IAccountWithKeys,
 ) => {
   const moduleFolder = "igp";
   const moduleName = "igp";
@@ -90,7 +90,7 @@ export const verifyIGP = async (
     sender,
     keyset,
     moduleFolder,
-    moduleName
+    moduleName,
   );
   console.log("\nVerifiying IGP");
   console.log(result);
@@ -99,7 +99,7 @@ export const verifyIGP = async (
 export const verifyMerkleTreeHook = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys
+  keyset: IAccountWithKeys,
 ) => {
   const moduleFolder = "merkle";
   const moduleName = "merkle-tree-hook";
@@ -109,7 +109,7 @@ export const verifyMerkleTreeHook = async (
     sender,
     keyset,
     moduleFolder,
-    moduleName
+    moduleName,
   );
   console.log("\nVerifiying Merkle Tree Hook");
   console.log(result);
@@ -118,7 +118,7 @@ export const verifyMerkleTreeHook = async (
 export const verifyMailbox = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys
+  keyset: IAccountWithKeys,
 ) => {
   const moduleFolder = "mailbox";
   const moduleName = "mailbox";
@@ -128,7 +128,7 @@ export const verifyMailbox = async (
     sender,
     keyset,
     moduleFolder,
-    moduleName
+    moduleName,
   );
   console.log("\nVerifiying Mailbox");
   console.log(result);
@@ -137,7 +137,7 @@ export const verifyMailbox = async (
 export const verifyGasStation = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys
+  keyset: IAccountWithKeys,
 ) => {
   const moduleFolder = "gas-station";
   const moduleName = "kinesis-gas-station";
@@ -147,7 +147,7 @@ export const verifyGasStation = async (
     sender,
     keyset,
     moduleFolder,
-    moduleName
+    moduleName,
   );
   console.log("\nVerifiying Gas Station");
   console.log(result);

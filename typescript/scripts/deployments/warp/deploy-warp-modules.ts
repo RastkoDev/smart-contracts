@@ -28,7 +28,7 @@ export const deployHypERC20Synth = async (
   sender: IAccountWithKeys,
   account: IAccountWithKeys,
   name: string,
-  precision: number
+  precision: number,
 ) => {
   const file = await getSyntheticFile();
   const resultSyn = await createTokenFile(file, name, precision.toString());
@@ -44,7 +44,7 @@ export const deployHypERC20Coll = async (
   account: IAccountWithKeys,
   name: string,
   collateral: string,
-  precision: number
+  precision: number,
 ) => {
   const file = await getCollateralFile();
   const resultCol = await createTokenFile(file, name, precision.toString());
@@ -66,7 +66,7 @@ export const deployHypERC20Coll = async (
     sender,
     account,
     initCommand,
-    capabilities
+    capabilities,
   );
   console.log(`Initializing ${name}`);
   console.log(initResult);
@@ -76,11 +76,11 @@ export const deployFungible = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   account: IAccountWithKeys,
-  name: string
+  name: string,
 ) => {
   const fileName = path.join(
     __dirname,
-    folderPrefix + `mainnet-tokens/${name}.pact`
+    folderPrefix + `mainnet-tokens/${name}.pact`,
   );
   const result = await deployModule(client, sender, account, fileName);
   console.log(`\nDeploying ${name}`);
@@ -93,7 +93,7 @@ export const enrollRemoteRouter = async (
   account: IAccountWithKeys,
   token: string,
   remoteRouterDomain: number,
-  remoteRouterAddress: string
+  remoteRouterAddress: string,
 ) => {
   const enrollCommand = `
     (namespace "${NAMESPACES[client.phase as keyof IDomains]}")
@@ -109,7 +109,7 @@ export const enrollRemoteRouter = async (
     sender,
     account,
     enrollCommand,
-    capabilities
+    capabilities,
   );
   console.log("Enrolling router");
   console.log(enrollResult);
@@ -117,7 +117,7 @@ export const enrollRemoteRouter = async (
 
 export const getRouterHash = async (
   client: IClientWithData,
-  moduleName: string
+  moduleName: string,
 ) => {
   const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
     (base64-decode (mailbox.get-router-hash ${moduleName}))`;
@@ -129,7 +129,7 @@ export const storeRouterToMailbox = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   account: IAccountWithKeys,
-  routerName: string
+  routerName: string,
 ) => {
   const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
     (mailbox.store-router ${routerName})`;
@@ -142,7 +142,7 @@ export const fundCollateralAccount = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   token: string,
-  amount: number
+  amount: number,
 ) => {
   const readCommand = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}") (${token}.get-collateral-account)`;
   const tx = (await submitReadTx(client, readCommand)) as unknown as TxData;
@@ -165,7 +165,7 @@ export const fundCollateralAccount = async (
     sender,
     sender,
     command,
-    capabilities
+    capabilities,
   );
   console.log(`\nFunding ${token}`);
   console.log(result);
@@ -175,7 +175,7 @@ export const getBalanceERC20 = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   account: IAccountWithKeys,
-  token: string
+  token: string,
 ) => {
   const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
     (${token}.get-balance "${account.name}")`;

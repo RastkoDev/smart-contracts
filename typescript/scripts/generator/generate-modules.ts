@@ -23,7 +23,7 @@ export const getSyntheticFile = async () => {
 export const createTokenFile = async (
   file: string,
   moduleName: string,
-  precision: string
+  precision: string,
 ) => {
   const nameRegExp = new RegExp("SYMBOL", "g");
   let resultFile = file.replaceAll(nameRegExp, moduleName);
@@ -35,12 +35,12 @@ export const createTokenFile = async (
 
 export const createNamespaceFile = async (
   client: IClientWithData,
-  file: string
+  file: string,
 ) => {
   const namespaceRegExp = new RegExp("NAMESPACE", "g");
   let resultFile = file.replaceAll(
     namespaceRegExp,
-    NAMESPACES[client.phase as keyof IDomains]
+    NAMESPACES[client.phase as keyof IDomains],
   );
   return resultFile;
 };
@@ -48,12 +48,12 @@ export const createNamespaceFile = async (
 async function main() {
   const colPath = path.join(
     __dirname,
-    "../../../pact/hyp-erc20-collateral/hyp-erc20-collateral.pact"
+    "../../../pact/hyp-erc20-collateral/hyp-erc20-collateral.pact",
   );
 
   const synPath = path.join(
     __dirname,
-    "../../../pact/hyp-erc20/hyp-erc20.pact"
+    "../../../pact/hyp-erc20/hyp-erc20.pact",
   );
 
   const synName = "hyp-erc20";
@@ -62,14 +62,14 @@ async function main() {
   const resultSyn = await createTokenFile(
     await getSyntheticFile(),
     synName,
-    "18"
+    "18",
   );
   await writeFile(synPath, resultSyn);
 
   const resultCol = await createTokenFile(
     await getCollateralFile(),
     colName,
-    "18"
+    "18",
   );
   await writeFile(colPath, resultCol);
 }

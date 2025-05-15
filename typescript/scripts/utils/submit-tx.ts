@@ -26,7 +26,7 @@ export const submitSignedTx = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
-  command: string
+  command: string,
 ) => {
   const creationTime = () => Math.round(new Date().getTime() / 1000);
 
@@ -51,7 +51,7 @@ export const submitSignedTxWithCap = async (
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
   command: string,
-  capabilities: ICapability[]
+  capabilities: ICapability[],
 ) => {
   const tx = Pact.builder
     .execution(command)
@@ -59,7 +59,7 @@ export const submitSignedTxWithCap = async (
       return capabilities.map((obj) =>
         obj.args
           ? withCapability(obj.name, ...obj.args)
-          : withCapability(obj.name)
+          : withCapability(obj.name),
       );
     })
     .addKeyset(keyset.keysetName, "keys-all", keyset.keys.publicKey)
@@ -80,7 +80,7 @@ export const submitSignedTxWithCapWithData = async (
   keyset: IAccountWithKeys,
   command: string,
   capabilities: ICapability[],
-  data: string
+  data: string,
 ) => {
   const creationTime = () => Math.round(new Date().getTime() / 1000);
 
@@ -90,7 +90,7 @@ export const submitSignedTxWithCapWithData = async (
       return capabilities.map((obj) =>
         obj.args
           ? withCapability(obj.name, ...obj.args)
-          : withCapability(obj.name)
+          : withCapability(obj.name),
       );
     })
     .addKeyset(keyset.keysetName, "keys-all", keyset.keys.publicKey)
@@ -114,7 +114,7 @@ export const submitDeployContract = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
-  command: string
+  command: string,
 ) => {
   const capabilities: ICapability[] = [
     // { name: "coin.GAS" },
@@ -127,7 +127,7 @@ export const submitDeployContract = async (
       return capabilities.map((obj) =>
         obj.args
           ? withCapability(obj.name, ...obj.args)
-          : withCapability(obj.name)
+          : withCapability(obj.name),
       );
     })
     .addKeyset(keyset.keysetName, "keys-all", keyset.keys.publicKey)
@@ -148,7 +148,7 @@ export const submitUpgradeContract = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
-  command: string
+  command: string,
 ) => {
   const capabilities: ICapability[] = [
     // { name: "coin.GAS" },
@@ -161,14 +161,14 @@ export const submitUpgradeContract = async (
       return capabilities.map((obj) =>
         obj.args
           ? withCapability(obj.name, ...obj.args)
-          : withCapability(obj.name)
+          : withCapability(obj.name),
       );
     })
     .addSigner(keyset.keys.publicKey, (withCapability) => {
       return capabilities.map((obj) =>
         obj.args
           ? withCapability(obj.name, ...obj.args)
-          : withCapability(obj.name)
+          : withCapability(obj.name),
       );
     })
     .addKeyset(sender.keysetName, "keys-all", sender.keys.publicKey)
@@ -190,7 +190,7 @@ export const submitVerifyContract = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
-  command: string
+  command: string,
 ) => {
   const capabilities: ICapability[] = [
     // { name: "coin.GAS" },
@@ -203,14 +203,14 @@ export const submitVerifyContract = async (
       return capabilities.map((obj) =>
         obj.args
           ? withCapability(obj.name, ...obj.args)
-          : withCapability(obj.name)
+          : withCapability(obj.name),
       );
     })
     .addSigner(keyset.keys.publicKey, (withCapability) => {
       return capabilities.map((obj) =>
         obj.args
           ? withCapability(obj.name, ...obj.args)
-          : withCapability(obj.name)
+          : withCapability(obj.name),
       );
     })
     .addKeyset(sender.keysetName, "keys-all", sender.keys.publicKey)
@@ -230,7 +230,7 @@ export const submitVerifyContract = async (
 
 export const submitReadTx = async (
   client: IClientWithData,
-  commmand: string
+  commmand: string,
 ) => {
   const tx = Pact.builder
     .execution(commmand)
@@ -248,7 +248,7 @@ export const deployModuleDirectly = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
-  file: string
+  file: string,
 ) => {
   const resultFile = await createNamespaceFile(client, file);
   return await submitDeployContract(client, sender, keyset, resultFile);
@@ -258,7 +258,7 @@ export const upgradeModuleDirectly = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
-  file: string
+  file: string,
 ) => {
   const resultFile = await createNamespaceFile(client, file);
   return await submitUpgradeContract(client, sender, keyset, resultFile);
@@ -269,7 +269,7 @@ export const verifyModuleDirectly = async (
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
   file: string,
-  moduleName: string
+  moduleName: string,
 ) => {
   let resultFile = await createNamespaceFile(client, file);
   const index = resultFile.indexOf('(if (read-msg "init")');
@@ -280,7 +280,7 @@ export const verifyModuleDirectly = async (
     client,
     sender,
     keyset,
-    resultFile
+    resultFile,
   )) as unknown as TxData;
   const array = submitTx.data.split(" ");
   const repoHash = array[array.length - 1];
@@ -297,7 +297,7 @@ export const deployModule = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
-  fileName: string
+  fileName: string,
 ) => {
   const file = (await fs.promises.readFile(fileName)).toString();
   const resultFile = await createNamespaceFile(client, file);
@@ -308,7 +308,7 @@ export const upgradeModule = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
-  fileName: string
+  fileName: string,
 ) => {
   const file = (await fs.promises.readFile(fileName)).toString();
   const resultFile = await createNamespaceFile(client, file);
@@ -320,12 +320,12 @@ export const verifyModule = async (
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
   moduleFolder: string,
-  moduleName: string
+  moduleName: string,
 ) => {
   const folderPrefix = "../../../pact/";
   const fileName = path.join(
     __dirname,
-    folderPrefix + moduleFolder + "/" + moduleName + ".pact"
+    folderPrefix + moduleFolder + "/" + moduleName + ".pact",
   );
   const file = (await readFile(fileName)).toString();
   let resultFile = await createNamespaceFile(client, file);
@@ -337,7 +337,7 @@ export const verifyModule = async (
     client,
     sender,
     keyset,
-    resultFile
+    resultFile,
   )) as unknown as TxData;
   const array = submitTx.data.split(" ");
   const repoHash = array[array.length - 1];
@@ -353,7 +353,7 @@ export const verifyModule = async (
 const signTx = async (
   client: IClient,
   keys: IKeyPair,
-  tx: IUnsignedCommand
+  tx: IUnsignedCommand,
 ) => {
   const sign = createSignWithKeypair([keys]);
   const signedTx = (await sign(tx)) as ICommand;
@@ -370,7 +370,7 @@ const signTx = async (
 const signTxSeveralSigners = async (
   client: IClient,
   keys: IKeyPair[],
-  tx: IUnsignedCommand
+  tx: IUnsignedCommand,
 ) => {
   const sign = createSignWithKeypair(keys);
   const signedTx = (await sign(tx)) as ICommand;
@@ -387,7 +387,7 @@ const signTxSeveralSigners = async (
 const resultTx = async (
   client: IClient,
   keys: IKeyPair[],
-  tx: IUnsignedCommand
+  tx: IUnsignedCommand,
 ) => {
   const sign = createSignWithKeypair(keys);
   const signedTx = (await sign(tx)) as ICommand;

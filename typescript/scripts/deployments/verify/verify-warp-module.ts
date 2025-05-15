@@ -11,7 +11,7 @@ export const verifyHypERC20Synth = async (
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
   name: string,
-  precision: number
+  precision: number,
 ) => {
   const file = await getSyntheticFile();
   const resultSyn = await createTokenFile(file, name, precision.toString());
@@ -21,7 +21,7 @@ export const verifyHypERC20Synth = async (
     sender,
     keyset,
     resultSyn,
-    name
+    name,
   );
   console.log(`\nVerifying ${name}`);
   console.log(result);
@@ -32,7 +32,7 @@ export const verifyHypERC20Coll = async (
   sender: IAccountWithKeys,
   keyset: IAccountWithKeys,
   name: string,
-  precision: number
+  precision: number,
 ) => {
   const file = await getCollateralFile();
   const resultCol = await createTokenFile(file, name, precision.toString());
@@ -42,7 +42,7 @@ export const verifyHypERC20Coll = async (
     sender,
     keyset,
     resultCol,
-    name
+    name,
   );
   console.log(`\nVerifying ${name}`);
   console.log(result);
