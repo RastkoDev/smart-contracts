@@ -181,7 +181,7 @@
       receiver-guard:guard
       amount:decimal
     )
-    (require-capability (mailbox.ONLY_MAILBOX hyp-erc20-collateral))
+    (require-capability (mailbox.ONLY_MAILBOX_CALL hyp-erc20-collateral origin sender chainId reciever receiver-guard amount))
     (let
       (
         (router-address:string (has-remote-router origin))

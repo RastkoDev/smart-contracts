@@ -85,7 +85,7 @@
     )
 
     (defun post-dispatch:bool (id:string message:object{hyperlane-message})
-        (require-capability (mailbox.POST-DISPATCH id))
+        (require-capability (mailbox.POST_DISPATCH_CALL id))
         (with-capability (INTERNAL)
             (insert-node id)
             true

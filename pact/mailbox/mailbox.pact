@@ -22,9 +22,9 @@
 
    (defcap ONLY_ADMIN () (enforce-guard "NAMESPACE.bridge-admin"))
 
-   (defcap ONLY_MAILBOX:bool (m:module{router-iface}) true)
+   (defcap ONLY_MAILBOX_CALL:bool (m:module{router-iface} origin:integer sender:string chainId:integer recipient:string recipient-guard:guard amount:decimal) true)
 
-   (defcap POST-DISPATCH:bool (id:string) true)
+   (defcap POST_DISPATCH_CALL:bool (id:string) true)
 
    (defcap PROCESS-MLC (message-id:string message:object{hyperlane-message} signers:[string] threshold:integer)
       (enforce-verifier "hyperlane_v3_message")
@@ -197,7 +197,7 @@
             )
             (igp.pay-for-gas id destination (quote-dispatch destination))
 
-            (with-capability (POST-DISPATCH id)
+            (with-capability (POST_DISPATCH_CALL id)
                (with-read dependencies "default"
                   {
                      "hook" := hook:module{hook-iface}
@@ -257,7 +257,9 @@
       )
       (with-capability (PROCESS-MLC message-id message (domain-routing-ism.get-validators message) (domain-routing-ism.get-threshold message))
          (let
-            ((id:string (hyperlane-message-id message)))
+            ((id:string (hyperlane-message-id message))
+             (origin:integer (at "originDomain" message))
+             (sender:string (at "sender" message)))
 
             (with-default-read deliveries id
                { "block-number": 0 }
@@ -284,11 +286,11 @@
                      {
                         "router-ref" := router:module{router-iface}
                      }
-                     (with-capability (ONLY_MAILBOX router)
-                        (router::handle (at "originDomain" message) (at "sender" message) (str-to-int chainId) recipient recipient-guard amount)
+                     (with-capability (ONLY_MAILBOX_CALL router origin sender chain recipient recipient-guard amount)
+                        (router::handle origin sender chain recipient recipient-guard amount)
                      )
                   )
-                  (emit-event (PROCESS (at "originDomain" message) (at "sender" message) recipient))
+                  (emit-event (PROCESS origin sender recipient))
                   (emit-event (PROCESS-ID id))
                )
             )
