@@ -7,7 +7,7 @@ import { createNamespaceFile } from "../../generator/generate-modules";
 export const deployStructs = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  account: IAccountWithKeys,
+  account: IAccountWithKeys
 ) => {
   console.log("\nDeploying structs");
 
@@ -20,14 +20,13 @@ export const deployStructs = async (
 export const deployInterfaces = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  account: IAccountWithKeys,
+  account: IAccountWithKeys
 ) => {
   console.log("\nDeploying interfaces");
   const folderName = "../../../../pact/interfaces/";
   const fileNames = [
     "i-gas-oracle.pact",
     "i-ism.pact",
-    "i-mailbox.pact",
     "i-hook.pact",
     "i-igp.pact",
     "i-router.pact",
@@ -42,7 +41,7 @@ const loadFolderInOrder = async (
   sender: IAccountWithKeys,
   account: IAccountWithKeys,
   folderName: string,
-  fileNames: string[],
+  fileNames: string[]
 ) => {
   const currentDir = path.join(__dirname, folderName);
   for (const fileName of fileNames) {
