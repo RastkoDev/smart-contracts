@@ -150,7 +150,7 @@
       receiver-guard:guard
       amount:decimal
     )
-    (require-capability (mailbox.ONLY_MAILBOX_CALL <name> origin sender chainId reciever receiver-guard amount))
+    (require-capability (mailbox.ONLY_MAILBOX_CALL SYMBOL origin sender chainId reciever receiver-guard amount))
     (let
       (
         (router-address:string (has-remote-router origin))
