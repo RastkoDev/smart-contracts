@@ -158,8 +158,8 @@
 
    (defun define-hook:string (hook:module{hook-iface})
       (with-capability (ONLY_ADMIN)
-      (write dependencies "default"
-         { "hook": hook } )))
+         (write dependencies "default"
+            { "hook": hook } )))
 
    (defun store-router:string (router:module{router-iface})
       (with-capability (ONLY_ADMIN)
