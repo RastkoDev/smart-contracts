@@ -9,6 +9,7 @@ import {
   ICommand,
 } from "@kadena/client";
 import {
+  IAccountMultipleWithKeys,
   IAccountWithKeys,
   ICapability,
   IClientWithData,
@@ -36,6 +37,42 @@ export const submitSignedTx = async (
     .addKeyset(keyset.keysetName, "keys-all", keyset.keys.publicKey)
     .setMeta({
       senderAccount: `k:${sender.keys.publicKey}`,
+      chainId: client.chainId as ChainId,
+      gasLimit: 100000,
+      creationTime: creationTime() - 28800,
+      ttl: 30000,
+    })
+    .setNetworkId(KDA_NETWORKS[client.phase as keyof INetworks])
+    .createTransaction();
+  return signTx(client.client, sender.keys, tx);
+};
+
+export const submitSignedTxMultiple = async (
+  client: IClientWithData,
+  sender: IAccountWithKeys,
+  keyset: IAccountMultipleWithKeys,
+  command: string,
+) => {
+  const creationTime = () => Math.round(new Date().getTime() / 1000);
+
+  const tx = Pact.builder
+    .execution(command)
+    .addSigner(sender.keys.publicKey)
+    // .addKeyset(
+    //   keyset.keysetName,
+    //   "keys-any",
+    //   `(read-keyset "${keyset.keysetName}")`,
+    // )
+    .addData(`${keyset.keysetName}`, {
+      keys: [
+        keyset.multipleKeys[0].publicKey,
+        keyset.multipleKeys[1].publicKey,
+        keyset.multipleKeys[2].publicKey,
+      ],
+      pred: "keys-any",
+    })
+    .setMeta({
+      senderAccount: sender.name,
       chainId: client.chainId as ChainId,
       gasLimit: 100000,
       creationTime: creationTime() - 28800,
@@ -74,29 +111,39 @@ export const submitSignedTxWithCap = async (
   return signTx(client.client, sender.keys, tx);
 };
 
-export const submitSignedTxWithData = async (
+export const submitSignedTxWithCapMultiple = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys,
+  keyset: IAccountMultipleWithKeys,
   command: string,
-  data: string,
+  capabilities: ICapability[],
 ) => {
-  const creationTime = () => Math.round(new Date().getTime() / 1000);
-
   const tx = Pact.builder
     .execution(command)
-    .addSigner(sender.keys.publicKey)
-    .addKeyset(keyset.keysetName, "keys-all", keyset.keys.publicKey)
-    .addData(data, {
-      keys: [keyset.keys.publicKey, "otherkey", "otherkey"],
+    .addSigner(sender.keys.publicKey, (withCapability) => {
+      return capabilities.map((obj) =>
+        obj.args
+          ? withCapability(obj.name, ...obj.args)
+          : withCapability(obj.name),
+      );
+    })
+    // .addKeyset(
+    //   keyset.keysetName,
+    //   "keys-any",
+    //   `(read-keyset "${keyset.keysetName}")`
+    // )
+    .addData(`${keyset.keysetName}`, {
+      keys: [
+        keyset.multipleKeys[0].publicKey,
+        keyset.multipleKeys[1].publicKey,
+        keyset.multipleKeys[2].publicKey,
+      ],
       pred: "keys-any",
     })
     .setMeta({
-      senderAccount: sender.name,
+      senderAccount: `k:${sender.keys.publicKey}`,
       chainId: client.chainId as ChainId,
-      gasLimit: 100000,
-      creationTime: creationTime() - 28800,
-      ttl: 30000,
+      gasLimit: 40000,
     })
     .setNetworkId(KDA_NETWORKS[client.phase as keyof INetworks])
     .createTransaction();

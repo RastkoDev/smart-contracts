@@ -97,7 +97,7 @@
 (define-keyset "NAMESPACE.gas-oracle-admin" (read-keyset "gas-oracle-admin-keyset"))
 
 (env-data { "bridge-pause-keyset": { "keys": [ bridge-keys.bridge, bridge-keys.alice, bridge-keys.bob ], "pred": "keys-any" } })
-(define-keyset "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-pausers" (read-keyset "bridge-pause-keyset"))
+(define-keyset "NAMESPACE.bridge-pausers" (read-keyset "bridge-pause-keyset"))
 
 (env-data { "treasury-keyset": { "keys": [ bridge-keys.treasury ], "pred": "keys-all" } })
 (define-keyset "NAMESPACE.treasury" (read-keyset "treasury-keyset"))

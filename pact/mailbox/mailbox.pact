@@ -22,7 +22,7 @@
 
    (defcap ONLY_ADMIN () (enforce-guard "NAMESPACE.bridge-admin"))
 
-   (defcap PAUSE () (enforce-guard "n_9b079bebc8a0d688e4b2f4279a114148d6760edf.bridge-pausers"))
+   (defcap PAUSE () (enforce-guard "NAMESPACE.bridge-pausers"))
 
    (defcap ONLY_MAILBOX_CALL:bool (m:module{router-iface} origin:integer sender:string chainId:integer recipient:string recipient-guard:guard amount:decimal) true)
    
@@ -97,50 +97,32 @@
                "paused": false,
                "nonce": 0,
                "latest-dispatched-id": "0"
-            }
-         )
-      )
-   )
+            } )))
 
    (defun pause:string (b:bool)
       @doc "Pauses the contract"
       (with-capability (PAUSE)
          (update contract-state "default"
-               {"paused": b})))
+            { "paused": b } )))
 
    (defun paused:bool ()
       (with-read contract-state "default"
-         {
-            "paused" := paused
-         }
-         paused
-      )
-   )
+         { "paused" := paused }
+         paused ))
 
    (defun delivered:bool (id:string)
       (with-default-read deliveries id
-         {
-            "block-number": 0
-         }
-         {
-            "block-number" := block-number
-         }
-         (> block-number 0)
-      )
-   )
+         { "block-number": 0 }
+         { "block-number" := block-number }
+         (> block-number 0) ))
 
    (defun nonce:integer ()
       (with-read contract-state "default"
-         {
-            "nonce" := nonce
-         }
-         nonce
-      )
-   )
+         { "nonce" := nonce }
+         nonce ))
 
    (defun recipient-ism ()
-      domain-routing-ism
-   )
+      domain-routing-ism )
 
    (defun define-hook:string (hook:module{hook-iface})
       (with-capability (ONLY_ADMIN)
@@ -153,11 +135,11 @@
             { "router-ref": router } )))
 
    (defun get-router-hash:string (router:module{router-iface})
-      (base64-encode (take 32 (hash router))))
+      (base64-encode (take 32 (hash router))) )
 
    (defun quote-dispatch:decimal (destination:integer)
       @doc "Computes payment for dispatching a message to the destination domain & recipient."
-      (igp.quote-gas-payment destination))
+      (igp.quote-gas-payment destination) )
 
    (defun dispatch:string (router:module{router-iface} destination:integer recipient-tm:string amount:decimal)
       @doc "Dispatches a message to the destination domain & recipient."
@@ -231,9 +213,7 @@
             "recipient": recipient,
             "amount": (* amount 1.0),
             "chainId": chainId
-         }
-      )
-   )
+         } ))
 
    (defun process (message-id:string message:object{hyperlane-message})
       @doc "Attempts to deliver HyperlaneMessage to its recipient."
@@ -276,13 +256,7 @@
                      )
                   )
                   (emit-event (PROCESS origin sender recipient))
-                  (emit-event (PROCESS-ID id))
-               )
-            )
-         )
-      )
-   )
-)
+                  (emit-event (PROCESS-ID id)) ))))))
 
 (if (read-msg "init")
   [

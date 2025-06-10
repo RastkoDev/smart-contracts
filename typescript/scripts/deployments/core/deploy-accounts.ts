@@ -10,7 +10,8 @@ import { IClientWithData } from "../../utils/interfaces";
 import {
   fundAccount,
   defineKeyset,
-  defineMultipleKeyset,
+  defineKeysetMultiple,
+  fundMultipleAccount,
 } from "../../utils/kadena-utils";
 
 export const deployAccounts = async (client: IClientWithData) => {
@@ -35,8 +36,8 @@ export const deployAccounts = async (client: IClientWithData) => {
   await fundAccount(client, ba_account, ua_account, 5);
 
   // Deploy bridge-pausers
-  await defineMultipleKeyset(client, ba_account, bp_account);
-  await fundAccount(client, ba_account, bp_account, 5);
+  await defineKeysetMultiple(client, ba_account, bp_account);
+  await fundMultipleAccount(client, ba_account, bp_account, 5);
 
   // Deploy random user accounts
   if (client.phase !== "mainnet") {

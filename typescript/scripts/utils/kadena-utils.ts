@@ -1,5 +1,6 @@
 import { PactNumber } from "@kadena/pactjs";
 import {
+  IAccountMultipleWithKeys,
   IAccountWithKeys,
   ICapability,
   IClientWithData,
@@ -8,9 +9,10 @@ import {
 import {
   submitReadTx,
   submitSignedTx,
+  submitSignedTxMultiple,
   submitSignedTxWithCap,
+  submitSignedTxWithCapMultiple,
   submitSignedTxWithCapWithData,
-  submitSignedTxWithData,
 } from "./submit-tx";
 import { exit } from "process";
 import { NAMESPACES } from "./constants";
@@ -90,21 +92,15 @@ export const defineKeyset = async (
   console.log(result);
 };
 
-export const defineMultipleKeyset = async (
+export const defineKeysetMultiple = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
-  keyset: IAccountWithKeys,
+  keyset: IAccountMultipleWithKeys,
 ) => {
   const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
   (define-keyset "${NAMESPACES[client.phase as keyof IDomains]}.${keyset.keysetName}" (read-keyset "${keyset.keysetName}"))`;
 
-  const result = await submitSignedTxWithData(
-    client,
-    sender,
-    keyset,
-    command,
-    keyset.keysetName,
-  );
+  const result = await submitSignedTxMultiple(client, sender, keyset, command);
   console.log(`\nDefining keyset ${keyset.keysetName}`);
   console.log(result);
 };
@@ -130,25 +126,46 @@ export const fundAccount = async (
     },
   ];
 
-  let result;
-  if (client.phase === "devnet") {
-    result = await submitSignedTxWithCapWithData(
-      client,
-      sender,
-      keyset,
-      command,
-      capabilities,
-      "",
-    );
-  } else {
-    result = await submitSignedTxWithCap(
-      client,
-      sender,
-      keyset,
-      command,
-      capabilities,
-    );
-  }
+  const result = await submitSignedTxWithCap(
+    client,
+    sender,
+    keyset,
+    command,
+    capabilities,
+  );
+
+  console.log(`\nFunding account: ${keyset.name}`);
+  console.log(result);
+};
+
+export const fundMultipleAccount = async (
+  client: IClientWithData,
+  sender: IAccountWithKeys,
+  keyset: IAccountMultipleWithKeys,
+  amount: number,
+) => {
+  const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}") 
+  (coin.transfer-create "${sender.name}" "${keyset.name}" (read-keyset "${keyset.keysetName}") ${amount}.0)`;
+
+  const capabilities: ICapability[] = [
+    { name: "coin.GAS" },
+    {
+      name: "coin.TRANSFER",
+      args: [
+        `${sender.name}`,
+        `${keyset.name}`,
+        new PactNumber(amount).toPactDecimal(),
+      ],
+    },
+  ];
+
+  const result = await submitSignedTxWithCapMultiple(
+    client,
+    sender,
+    keyset,
+    command,
+    capabilities,
+  );
 
   console.log(`\nFunding account: ${keyset.name}`);
   console.log(result);
