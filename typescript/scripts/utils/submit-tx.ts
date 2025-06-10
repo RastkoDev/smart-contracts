@@ -58,14 +58,13 @@ export const submitSignedTxMultiple = async (
   const tx = Pact.builder
     .execution(command)
     .addSigner(sender.keys.publicKey)
-    .addData(`${keyset.keysetName}`, {
-      keys: [
-        keyset.multipleKeys[0].publicKey,
-        keyset.multipleKeys[1].publicKey,
-        keyset.multipleKeys[2].publicKey,
-      ],
-      pred: "keys-any",
-    })
+    .addKeyset(
+      `${keyset.keysetName}`,
+      "keys-any",
+      keyset.multipleKeys[0].publicKey,
+      keyset.multipleKeys[1].publicKey,
+      keyset.multipleKeys[2].publicKey,
+    )
     .setMeta({
       senderAccount: sender.name,
       chainId: client.chainId as ChainId,
@@ -122,14 +121,13 @@ export const submitSignedTxWithCapMultiple = async (
           : withCapability(obj.name),
       );
     })
-    .addData(`${keyset.keysetName}`, {
-      keys: [
-        keyset.multipleKeys[0].publicKey,
-        keyset.multipleKeys[1].publicKey,
-        keyset.multipleKeys[2].publicKey,
-      ],
-      pred: "keys-any",
-    })
+    .addKeyset(
+      `${keyset.keysetName}`,
+      "keys-any",
+      keyset.multipleKeys[0].publicKey,
+      keyset.multipleKeys[1].publicKey,
+      keyset.multipleKeys[2].publicKey,
+    )
     .setMeta({
       senderAccount: `k:${sender.keys.publicKey}`,
       chainId: client.chainId as ChainId,
