@@ -10,7 +10,7 @@
   (use hyperlane-message)
   (use token-message)
   (use router-iface)
-  
+
   ;; Tables
   (deftable contract-state:{col-state})
   (deftable routers:{router-address})
@@ -21,9 +21,9 @@
 
   (defcap INTERNAL () true)
 
-  (defcap TRANSFER_REMOTE:bool 
+  (defcap TRANSFER_REMOTE:bool
     (
-      destination:integer 
+      destination:integer
       sender:string
       recipient:string
       amount:decimal
@@ -54,7 +54,7 @@
   (defun get-collateral-account ()
       COLLATERAL_ACCOUNT
   )
-  
+
   (defun create-treasury-guard:guard ()
     (create-capability-guard (COLLATERAL))
   )
@@ -72,11 +72,11 @@
 
   (defun precision:integer () PRECISION)
 
-  (defun get-adjusted-amount:decimal (amount:decimal) 
+  (defun get-adjusted-amount:decimal (amount:decimal)
     (* amount (dec (^ 10 (precision))))
   )
 
-  (defun get-adjusted-amount-back:decimal (amount:decimal) 
+  (defun get-adjusted-amount-back:decimal (amount:decimal)
     (* amount (dec (^ 10 (- 18 (precision)))))
   )
 
@@ -90,7 +90,7 @@
   )
 
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Router ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    
+
   (defun enroll-remote-router:bool (domain:integer address:string)
     (with-capability (ONLY_ADMIN)
       (enforce (!= domain 0) "Domain cannot be zero")
@@ -102,7 +102,7 @@
       true
     )
   )
-  
+
   (defun has-remote-router:string (domain:integer)
     (with-default-read routers (int-to-str 10 domain)
       {
@@ -116,14 +116,14 @@
     )
   )
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; GasRouter ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; GasRouter ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
   (defun quote-gas-payment:decimal (domain:integer)
     (has-remote-router domain)
     (igp.quote-gas-payment domain)
   )
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; TokenRouter ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; TokenRouter ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
   (defun transfer-remote:string (destination:integer sender:string recipient-tm:string amount:decimal)
     (with-capability (TRANSFER_REMOTE destination sender recipient-tm amount)
@@ -134,19 +134,19 @@
         (transfer-from sender amount)
         receiver-router
       )
-    ) 
+    )
   )
-  
-  (defun handle:bool 
+
+  (defun handle:bool
     (
-      origin:integer 
-      sender:string 
-      chainId:integer 
-      reciever:string 
-      receiver-guard:guard 
+      origin:integer
+      sender:string
+      chainId:integer
+      reciever:string
+      receiver-guard:guard
       amount:decimal
     )
-    (require-capability (mailbox.ONLY_MAILBOX))
+    (require-capability (mailbox.ONLY_MAILBOX_CALL SYMBOL origin sender chainId reciever receiver-guard amount))
     (let
       (
         (router-address:string (has-remote-router origin))
@@ -163,7 +163,7 @@
     )
   )
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ERC20 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; 
+  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; ERC20 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
   (defun transfer-from (sender:string amount:decimal)
     (with-read contract-state "default"
