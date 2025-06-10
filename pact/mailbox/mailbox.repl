@@ -104,6 +104,7 @@
 ;; define-hook
 (begin-tx)
 (namespace "NAMESPACE")
+(env-sigs [ { "key": bridge-keys.bridge, "caps": [ (mailbox.ONLY_ADMIN) ] } ])
 (mailbox.define-hook merkle-tree-hook)
 (commit-tx)
 
