@@ -68,6 +68,12 @@ export interface IAccountWithKeys {
   keys: IKeyPair;
 }
 
+export interface IAccountMultipleWithKeys {
+  name: string;
+  keysetName: string;
+  multipleKeys: IKeyPair[];
+}
+
 export interface ICapability {
   name: string;
   args?: any[];

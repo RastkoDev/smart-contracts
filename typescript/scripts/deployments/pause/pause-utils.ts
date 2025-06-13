@@ -16,12 +16,12 @@ export const pauseKDA = async (
   account: IAccountWithKeys,
 ) => {
   const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
-      (mailbox.pause)`;
+      (mailbox.pause true)`;
 
   const capabilities: ICapability[] = [
     { name: "coin.GAS" },
     {
-      name: `${NAMESPACES[client.phase as keyof IDomains]}.mailbox.ONLY_ADMIN`,
+      name: `${NAMESPACES[client.phase as keyof IDomains]}.mailbox.PAUSE`,
     },
   ];
   const result = await submitSignedTxWithCap(
@@ -40,12 +40,12 @@ export const unpauseKDA = async (
   account: IAccountWithKeys,
 ) => {
   const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
-      (mailbox.unpause)`;
+      (mailbox.pause false)`;
 
   const capabilities: ICapability[] = [
     { name: "coin.GAS" },
     {
-      name: `${NAMESPACES[client.phase as keyof IDomains]}.mailbox.ONLY_ADMIN`,
+      name: `${NAMESPACES[client.phase as keyof IDomains]}.mailbox.PAUSE`,
     },
   ];
   const result = await submitSignedTxWithCap(
