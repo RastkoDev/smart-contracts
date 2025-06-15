@@ -22,8 +22,10 @@
 
    (defcap ONLY_ADMIN () (enforce-guard "NAMESPACE.bridge-admin"))
 
-   (defcap ONLY_MAILBOX_CALL:bool (m:module{router-iface} origin:integer sender:string chainId:integer recipient:string recipient-guard:guard amount:decimal) true)
+   (defcap PAUSE () (enforce-guard "NAMESPACE.bridge-pausers"))
 
+   (defcap ONLY_MAILBOX_CALL:bool (m:module{router-iface} origin:integer sender:string chainId:integer recipient:string recipient-guard:guard amount:decimal) true)
+   
    (defcap POST_DISPATCH_CALL:bool (id:string) true)
 
    (defcap PROCESS-MLC (message-id:string message:object{hyperlane-message} signers:[string] threshold:integer)
@@ -95,66 +97,32 @@
                "paused": false,
                "nonce": 0,
                "latest-dispatched-id": "0"
-            }
-         )
-      )
-   )
+            } )))
 
-   (defun pause:string ()
-      (with-capability (ONLY_ADMIN)
-         (with-read contract-state "default"
-            {"paused" := paused}
-            (enforce (not paused) "Already paused")
-         )
+   (defun pause:string (b:bool)
+      @doc "Pauses the contract"
+      (with-capability (PAUSE)
          (update contract-state "default"
-               {"paused": true})
-      )
-   )
-
-   (defun unpause:string ()
-      (with-capability (ONLY_ADMIN)
-         (with-read contract-state "default"
-            {"paused" := paused}
-            (enforce paused "Already unpaused")
-         )
-         (update contract-state "default"
-               {"paused": false})
-      )
-   )
+            { "paused": b } )))
 
    (defun paused:bool ()
       (with-read contract-state "default"
-         {
-            "paused" := paused
-         }
-         paused
-      )
-   )
+         { "paused" := paused }
+         paused ))
 
    (defun delivered:bool (id:string)
       (with-default-read deliveries id
-         {
-            "block-number": 0
-         }
-         {
-            "block-number" := block-number
-         }
-         (> block-number 0)
-      )
-   )
+         { "block-number": 0 }
+         { "block-number" := block-number }
+         (> block-number 0) ))
 
    (defun nonce:integer ()
       (with-read contract-state "default"
-         {
-            "nonce" := nonce
-         }
-         nonce
-      )
-   )
+         { "nonce" := nonce }
+         nonce ))
 
    (defun recipient-ism ()
-      domain-routing-ism
-   )
+      domain-routing-ism )
 
    (defun define-hook:string (hook:module{hook-iface})
       (with-capability (ONLY_ADMIN)
@@ -167,11 +135,11 @@
             { "router-ref": router } )))
 
    (defun get-router-hash:string (router:module{router-iface})
-      (base64-encode (take 32 (hash router))))
+      (base64-encode (take 32 (hash router))) )
 
    (defun quote-dispatch:decimal (destination:integer)
       @doc "Computes payment for dispatching a message to the destination domain & recipient."
-      (igp.quote-gas-payment destination))
+      (igp.quote-gas-payment destination) )
 
    (defun dispatch:string (router:module{router-iface} destination:integer recipient-tm:string amount:decimal)
       @doc "Dispatches a message to the destination domain & recipient."
@@ -245,9 +213,7 @@
             "recipient": recipient,
             "amount": (* amount 1.0),
             "chainId": chainId
-         }
-      )
-   )
+         } ))
 
    (defun process (message-id:string message:object{hyperlane-message})
       @doc "Attempts to deliver HyperlaneMessage to its recipient."
@@ -260,7 +226,6 @@
             ((id:string (hyperlane-message-id message))
              (origin:integer (at "originDomain" message))
              (sender:string (at "sender" message)))
-
             (with-default-read deliveries id
                { "block-number": 0 }
                { "block-number" := block-number }
@@ -291,13 +256,7 @@
                      )
                   )
                   (emit-event (PROCESS origin sender recipient))
-                  (emit-event (PROCESS-ID id))
-               )
-            )
-         )
-      )
-   )
-)
+                  (emit-event (PROCESS-ID id)) ))))))
 
 (if (read-msg "init")
   [

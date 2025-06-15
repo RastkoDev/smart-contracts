@@ -9,6 +9,7 @@ import {
   ICommand,
 } from "@kadena/client";
 import {
+  IAccountMultipleWithKeys,
   IAccountWithKeys,
   ICapability,
   IClientWithData,
@@ -46,6 +47,36 @@ export const submitSignedTx = async (
   return signTx(client.client, sender.keys, tx);
 };
 
+export const submitSignedTxMultiple = async (
+  client: IClientWithData,
+  sender: IAccountWithKeys,
+  keyset: IAccountMultipleWithKeys,
+  command: string,
+) => {
+  const creationTime = () => Math.round(new Date().getTime() / 1000);
+
+  const tx = Pact.builder
+    .execution(command)
+    .addSigner(sender.keys.publicKey)
+    .addKeyset(
+      `${keyset.keysetName}`,
+      "keys-any",
+      keyset.multipleKeys[0].publicKey,
+      keyset.multipleKeys[1].publicKey,
+      keyset.multipleKeys[2].publicKey,
+    )
+    .setMeta({
+      senderAccount: sender.name,
+      chainId: client.chainId as ChainId,
+      gasLimit: 100000,
+      creationTime: creationTime() - 28800,
+      ttl: 30000,
+    })
+    .setNetworkId(KDA_NETWORKS[client.phase as keyof INetworks])
+    .createTransaction();
+  return signTx(client.client, sender.keys, tx);
+};
+
 export const submitSignedTxWithCap = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
@@ -71,6 +102,39 @@ export const submitSignedTxWithCap = async (
     .setNetworkId(KDA_NETWORKS[client.phase as keyof INetworks])
     .createTransaction();
 
+  return signTx(client.client, sender.keys, tx);
+};
+
+export const submitSignedTxWithCapMultiple = async (
+  client: IClientWithData,
+  sender: IAccountWithKeys,
+  keyset: IAccountMultipleWithKeys,
+  command: string,
+  capabilities: ICapability[],
+) => {
+  const tx = Pact.builder
+    .execution(command)
+    .addSigner(sender.keys.publicKey, (withCapability) => {
+      return capabilities.map((obj) =>
+        obj.args
+          ? withCapability(obj.name, ...obj.args)
+          : withCapability(obj.name),
+      );
+    })
+    .addKeyset(
+      `${keyset.keysetName}`,
+      "keys-any",
+      keyset.multipleKeys[0].publicKey,
+      keyset.multipleKeys[1].publicKey,
+      keyset.multipleKeys[2].publicKey,
+    )
+    .setMeta({
+      senderAccount: `k:${sender.keys.publicKey}`,
+      chainId: client.chainId as ChainId,
+      gasLimit: 40000,
+    })
+    .setNetworkId(KDA_NETWORKS[client.phase as keyof INetworks])
+    .createTransaction();
   return signTx(client.client, sender.keys, tx);
 };
 

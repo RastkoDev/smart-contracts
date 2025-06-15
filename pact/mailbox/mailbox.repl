@@ -123,30 +123,12 @@
 (expect "Quoted 1 KDA" 1.0 (mailbox.quote-dispatch data.eth-domain))
 (commit-tx)
 
-;; pause ;; fail capability ONLY_ADMIN
-(begin-tx)
-(namespace "NAMESPACE")
-(expect "Not paused" false (mailbox.paused))
-(env-sigs [ { "key": bridge-keys.alice, "caps": [] } ])
-(expect-failure "Cannot interact with mailbox directly" (mailbox.pause))
-(expect "Not paused" false (mailbox.paused))
-(commit-tx)
-
 ;; pause ; success
 (begin-tx)
 (namespace "NAMESPACE")
 (expect "Not paused" false (mailbox.paused))
-(env-sigs [ { "key": bridge-keys.bridge, "caps": [ (mailbox.ONLY_ADMIN) ] } ])
-(mailbox.pause)
-(expect "Paused" true (mailbox.paused))
-(commit-tx)
-
-;; pause ;; fail already paused
-(begin-tx)
-(namespace "NAMESPACE")
-(expect "Paused" true (mailbox.paused))
-(env-sigs [ { "key": bridge-keys.alice, "caps": [] } ])
-(expect-failure "Already paused" (mailbox.pause))
+(env-sigs [ { "key": bridge-keys.bridge, "caps": [ (mailbox.PAUSE) ] } ])
+(mailbox.pause true)
 (expect "Paused" true (mailbox.paused))
 (commit-tx)
 
@@ -181,10 +163,12 @@
 
 ;; unpause ;; fail capability ONLY_ADMIN
 (begin-tx)
+(env-keys [])
+(env-sigs [])
 (namespace "NAMESPACE")
 (expect "Paused" true (mailbox.paused))
-(env-sigs [ { "key": bridge-keys.alice, "caps": [] } ])
-(expect-failure "Cannot interact with mailbox directly" (mailbox.unpause))
+(env-sigs [ { "key": bridge-keys.charly, "caps": [(mailbox.PAUSE)] } ])
+(expect-failure "Cannot interact with mailbox directly" "Keyset failure" (mailbox.pause true))
 (expect "Paused" true (mailbox.paused))
 (commit-tx)
 
@@ -192,17 +176,8 @@
 (begin-tx)
 (namespace "NAMESPACE")
 (expect "Paused" true (mailbox.paused))
-(env-sigs [ { "key": bridge-keys.bridge, "caps": [ (mailbox.ONLY_ADMIN) ] } ])
-(mailbox.unpause)
-(expect "Not paused" false (mailbox.paused))
-(commit-tx)
-
-;; unpause ;; fail already unpaused
-(begin-tx)
-(namespace "NAMESPACE")
-(expect "Not paused" false (mailbox.paused))
-(env-sigs [ { "key": bridge-keys.alice, "caps": [] } ])
-(expect-failure "Already unpaused" (mailbox.unpause))
+(env-sigs [ { "key": bridge-keys.bridge, "caps": [ (mailbox.PAUSE) ] } ])
+(mailbox.pause false)
 (expect "Not paused" false (mailbox.paused))
 (commit-tx)
 
