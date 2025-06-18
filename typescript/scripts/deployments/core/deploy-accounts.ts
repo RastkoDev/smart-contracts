@@ -1,12 +1,18 @@
 import {
   ba_account,
+  bp_account,
   ft_account,
   goa_account,
   tu_account,
   ua_account,
 } from "../../utils/constants";
 import { IClientWithData } from "../../utils/interfaces";
-import { fundAccount, defineKeyset } from "../../utils/kadena-utils";
+import {
+  fundAccount,
+  defineKeyset,
+  defineKeysetMultiple,
+  fundMultipleAccount,
+} from "../../utils/kadena-utils";
 
 export const deployAccounts = async (client: IClientWithData) => {
   // Deploy bridge-admin
@@ -28,6 +34,10 @@ export const deployAccounts = async (client: IClientWithData) => {
   // Deploy upgrade-admin
   await defineKeyset(client, ba_account, ua_account);
   await fundAccount(client, ba_account, ua_account, 5);
+
+  // Deploy bridge-pausers
+  await defineKeysetMultiple(client, ba_account, bp_account);
+  await fundMultipleAccount(client, ba_account, bp_account, 5);
 
   // Deploy random user accounts
   if (client.phase !== "mainnet") {

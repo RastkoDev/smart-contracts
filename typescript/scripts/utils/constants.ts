@@ -1,5 +1,6 @@
 import { IKeyPair, createClient } from "@kadena/client";
 import {
+  IAccountMultipleWithKeys,
   IAccountWithKeys,
   IClientWithData,
   IDomains,
@@ -115,6 +116,16 @@ const keys3: IKeyPair = {
   secretKey: `${process.env.KEY3_SECRET}`,
 };
 
+const keys4: IKeyPair = {
+  publicKey: `${process.env.KEY4_PUBLIC}`,
+  secretKey: `${process.env.KEY4_SECRET}`,
+};
+
+const keys5: IKeyPair = {
+  publicKey: `${process.env.KEY5_PUBLIC}`,
+  secretKey: `${process.env.KEY5_SECRET}`,
+};
+
 // test keys
 const keyst: IKeyPair = {
   publicKey: "e5db35973f544642cb8b1539cb8bdf039cfe11e5f7e1127a146bd2a6d13d28c4",
@@ -157,6 +168,12 @@ export const ua_account: IAccountWithKeys = {
   name: "upgrade-admin",
   keysetName: "upgrade-admin",
   keys: keys3,
+};
+
+export const bp_account: IAccountMultipleWithKeys = {
+  name: "bridge-pausers",
+  keysetName: "bridge-pausers",
+  multipleKeys: [keys1, keys4, keys5],
 };
 
 export const tu_account: IAccountWithKeys = {
