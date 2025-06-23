@@ -39,7 +39,7 @@
   (defun remove-domain:string (domain:integer)
     (with-capability (ONLY_ADMIN)
       (update domain-routing (int-to-str 10 domain) 
-        { "ism": null, "active": false })))
+        { "active": false })))
 
   (defun get-domains:[integer] ()
     (map (str-to-int) (filter (is-active) (keys domain-routing))))

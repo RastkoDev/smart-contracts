@@ -149,7 +149,7 @@
     (coin.TRANSFER
         bridge-keys.alice-principal
         igp.IGP_ACCOUNT
-        (hyp-erc20-collateral.quote-gas-payment data.eth-domain)
+        (igp.quote-gas-payment data.eth-domain)
     )
 ]}])
 (env-chain-data { "sender": bridge-keys.alice-principal })

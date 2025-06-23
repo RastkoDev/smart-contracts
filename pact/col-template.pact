@@ -78,12 +78,6 @@
       (enforce (!= remote-address "empty") "Remote router is not available.")
       remote-address))
 
-  ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; GasRouter ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-  (defun quote-gas-payment:decimal (domain:integer)
-    (has-remote-router domain)
-    (igp.quote-gas-payment domain))
-
   ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; TokenRouter ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
   (defun transfer-remote:string (destination:integer sender:string recipient-tm:string amount:decimal)
