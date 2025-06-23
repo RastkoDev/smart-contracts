@@ -5,7 +5,6 @@
 (enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 (module mailbox GOVERNANCE
-
    ;; Imports
    (use hyperlane-message)
 

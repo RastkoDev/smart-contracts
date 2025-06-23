@@ -3,6 +3,7 @@
 (enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 (module SYMBOL GOVERNANCE
+  ;; Interfaces
   (implements fungible-v2)
   (implements router-iface)
 

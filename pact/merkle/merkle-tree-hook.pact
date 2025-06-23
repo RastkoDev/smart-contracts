@@ -5,7 +5,10 @@
 (enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 (module merkle-tree-hook GOVERNANCE
+    ;; Interfaces
     (implements hook-iface)
+
+    ;; Imports
     (use hyperlane-message)
 
     ;; Capabilities

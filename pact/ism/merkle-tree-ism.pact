@@ -7,9 +7,10 @@
 ;; `verify-spv` functions do most of the functionality of ISM.
 
 (module merkle-tree-ism GOVERNANCE
-
+  ;; Interfaces
   (implements ism-iface)
 
+  ;; Imports
   (use hyperlane-message)
   (use ism-iface)
 

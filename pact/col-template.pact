@@ -3,6 +3,7 @@
 (enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 (module SYMBOL GOVERNANCE
+  ;; Interfaces
   (implements router-iface)
 
   ;; Imports

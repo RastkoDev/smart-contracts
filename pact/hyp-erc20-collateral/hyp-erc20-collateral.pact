@@ -3,6 +3,7 @@
 (enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 (module hyp-erc20-collateral GOVERNANCE
+  ;; Interfaces
   (implements router-iface)
 
   ;; Imports

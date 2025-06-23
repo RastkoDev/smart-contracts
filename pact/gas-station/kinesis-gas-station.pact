@@ -3,9 +3,10 @@
 (enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 (module kinesis-gas-station GOVERNANCE
+  ;; Interfaces
+  (implements gas-payer-v1)
 
   ;; Imports 
-  (implements gas-payer-v1)
   (use coin)
   (use guards1)
 

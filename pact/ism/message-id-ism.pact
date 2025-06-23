@@ -5,9 +5,10 @@
 (enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 (module message-id-ism GOVERNANCE
-
+  ;; Interfaces
   (implements ism-iface)
 
+  ;; Imports
   (use hyperlane-message)
   (use ism-iface)
 

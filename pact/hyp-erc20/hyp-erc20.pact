@@ -3,6 +3,7 @@
 (enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 (module hyp-erc20 GOVERNANCE
+  ;; Interfaces
   (implements fungible-v2)
   (implements router-iface)
 
