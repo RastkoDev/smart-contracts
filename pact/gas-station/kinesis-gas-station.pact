@@ -27,5 +27,8 @@
 
   (defun gas-payer-guard ()
     (require-capability (GAS))
-    (require-capability (ALLOW_GAS)))
-)
+    (require-capability (ALLOW_GAS))))
+
+(if (read-msg "init")
+  []
+  "Upgrade complete")

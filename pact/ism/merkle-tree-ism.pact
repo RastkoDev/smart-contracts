@@ -53,8 +53,7 @@
   (defun get-threshold:integer (message:object{hyperlane-message})
     (with-read contract-state "default"
       { "threshold" := threshold }
-      threshold))
-)
+      threshold)))
 
 (if (read-msg "init")
   [

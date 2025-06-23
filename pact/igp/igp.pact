@@ -80,8 +80,7 @@
   (defun pay-for-gas:bool (id:string domain:integer gas-amount:decimal)
     (coin.transfer (at "sender" (chain-data)) IGP_ACCOUNT (quote-gas-payment domain))
     (emit-event (GAS_PAYMENT id domain (round (* gas-amount (dec (^ 10 (coin.precision))))) (round (* (quote-gas-payment domain) (dec (^ 10 (coin.precision)))))))
-    true)
-)
+    true))
 
 (if (read-msg "init")
   [ 
