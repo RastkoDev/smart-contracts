@@ -33,14 +33,13 @@
 
   (defun set-domain:string (domain:integer ism:module{ism-iface})
     (with-capability (ONLY_ADMIN)
-      (write domain-routing (int-to-str 10 domain) {
-          "ism": ism,
-          "active": true })))
+      (write domain-routing (int-to-str 10 domain) 
+        { "ism": ism, "active": true })))
 
   (defun remove-domain:string (domain:integer)
     (with-capability (ONLY_ADMIN)
-      (update domain-routing (int-to-str 10 domain) {
-          "active": false })))
+      (update domain-routing (int-to-str 10 domain) 
+        { "ism": null, "active": false })))
 
   (defun get-domains:[integer] ()
     (map (str-to-int) (filter (is-active) (keys domain-routing))))
@@ -50,10 +49,7 @@
 
   (defun get-module:module{ism-iface} (origin:integer)
     (with-read domain-routing (int-to-str 10 origin)
-      {
-        "ism" := ism:module{ism-iface},
-        "active" := active
-      }
+      { "ism" := ism:module{ism-iface}, "active" := active }
       (enforce active (format "no ISM found for origin {}" [origin]))
       ism))
 

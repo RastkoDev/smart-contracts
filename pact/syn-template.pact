@@ -20,7 +20,7 @@
     @doc "Schema for yielded (transfer-crosschain) arguments."
     receiver:string
     receiver-guard:guard
-    amount:decimal )
+    amount:decimal)
 
   ;; Capabilities
   (defcap GOVERNANCE () (enforce-guard "NAMESPACE.upgrade-admin"))
