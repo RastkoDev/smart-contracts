@@ -8,9 +8,16 @@
 ;; on another chain. The values are passed to InterchainGasPayment module (IGP).
 
 (module gas-oracle GOVERNANCE
-  (implements gas-oracle-iface)
-  
-  (use gas-oracle-iface)
+  ;; Schemas
+  (defschema remote-gas-data-input
+    domain:integer
+    token-exchange-rate:decimal
+    gas-price:decimal)
+
+  (defschema remote-gas-data
+    token-exchange-rate:decimal
+    gas-price:decimal)
+
   ;; Tables
   (deftable gas-data-table:{remote-gas-data})
   

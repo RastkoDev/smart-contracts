@@ -8,10 +8,17 @@
 ;; messages to destination chains and includes the gas overhead per destination
 
 (module igp GOVERNANCE
-  (implements igp-iface)
- 
-  (use igp-iface)
- 
+  ;; Schemas
+  (defschema igp-state
+    treasury:string)
+
+  (defschema remote-gas-amount-input
+    domain:integer
+    gas-amount:decimal)
+
+  (defschema remote-gas-amount
+    gas-amount:decimal)
+
   ;; Tables
   (deftable contract-state:{igp-state})
   (deftable gas-amount-table:{remote-gas-amount})

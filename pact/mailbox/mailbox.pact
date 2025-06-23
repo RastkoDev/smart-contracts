@@ -8,13 +8,26 @@
 
    ;; Imports
    (use hyperlane-message)
-   (use mailbox-state-iface)
 
    ;; Schemas
+   (defschema mailbox-state
+      paused:bool
+      nonce:integer
+      latest-dispatched-id:string)
+   
+   (defschema dependency
+      hook:module{hook-iface})
+   
+   (defschema delivery
+      block-number:integer)
+      
+   (defschema router-hash
+      router-ref:module{router-iface})
+
    (defschema decoded-token-message
       recipient:keyset
       amount:decimal
-      chainId:integer )
+      chainId:integer)
 
    ;; Tables
    (deftable contract-state:{mailbox-state})
