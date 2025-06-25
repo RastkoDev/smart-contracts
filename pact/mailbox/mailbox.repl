@@ -117,12 +117,6 @@
 (mailbox.store-router hyp-erc20)
 (commit-tx)
 
-;;quote-dispatch
-(begin-tx)
-(namespace "NAMESPACE")
-(expect "Quoted 1 KDA" 1.0 (mailbox.quote-dispatch data.eth-domain))
-(commit-tx)
-
 ;; pause ; success
 (begin-tx)
 (namespace "NAMESPACE")

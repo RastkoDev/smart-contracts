@@ -39,7 +39,7 @@
    (defcap ONLY_ADMIN () (enforce-guard "NAMESPACE.bridge-admin"))
    (defcap PAUSE () (enforce-guard "NAMESPACE.bridge-pausers"))
    (defcap INTERNAL () true)
-   (defcap ONLY_MAILBOX_CALL:bool (m:module{router-iface} origin:integer sender:string chainId:integer recipient:string recipient-guard:guard amount:decimal) true)
+   (defcap POST_PROCESS_CALL:bool (m:module{router-iface} origin:integer sender:string chainId:integer recipient:string recipient-guard:guard amount:decimal) true)
    (defcap POST_DISPATCH_CALL:bool (id:string) true)
    (defcap PROCESS-MLC (message-id:string message:object{hyperlane-message} signers:[string] threshold:integer)
       (enforce-verifier "hyperlane_v3_message")
@@ -52,10 +52,6 @@
    (defconst VERSION:integer 3)
 
    ;; Events
-   (defcap SENT_TRANSFER_REMOTE (destination:integer recipient:string amount:decimal)
-      @doc "Emitted on `transferRemote` when a transfer message is dispatched"
-      @event true)
-
    (defcap DISPATCH (version:integer nonce:integer sender:string destination:integer recipient:string message-body:string)
       @doc "Emitted when a new message is dispatched via Hyperlane"
       @event true)
@@ -155,10 +151,6 @@
    (defun get-router-hash:string (router:module{router-iface})
       (base64-encode (take 32 (hash router))))
 
-   (defun quote-dispatch:decimal (destination:integer)
-      @doc "Computes payment for dispatching a message to the destination domain & recipient."
-      (igp.quote-gas-payment destination))
-
    (defun dispatch:string (router:module{router-iface} destination:integer recipient-tm:string amount:decimal)
       @doc "Dispatches a message to the destination domain & recipient."
       (let (
@@ -168,7 +160,7 @@
             (id:string (hyperlane-message-id message))) 
          (with-capability (INTERNAL)
             (update-dispatch (nonce) id))
-         (igp.pay-for-gas id destination (quote-dispatch destination))
+         (igp.pay-for-gas id destination (igp.quote-gas-payment destination))
          (with-capability (POST_DISPATCH_CALL id)
             (let ((hook:module{hook-iface} (get-hook)))
                (hook::post-dispatch id message))) 
@@ -199,7 +191,7 @@
                (enforce (and (<= chain 19) (>= chain 0)) "Invalid chain ID")
                (enforce (!= recipient "") "Recipient cannot be empty")
                (let ((router:module{router-iface} (get-router (at "recipient" message))))
-                  (with-capability (ONLY_MAILBOX_CALL router origin sender chain recipient recipient-guard amount)
+                  (with-capability (POST_PROCESS_CALL router origin sender chain recipient recipient-guard amount)
                      (router::handle origin sender chain recipient recipient-guard amount)))
                (emit-event (PROCESS origin sender recipient))))
                (let ((id:string (hyperlane-message-id message)))

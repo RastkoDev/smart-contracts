@@ -88,7 +88,7 @@
         receiver-router)))
 
   (defun handle:bool (origin:integer sender:string chainId:integer reciever:string receiver-guard:guard amount:decimal)
-    (require-capability (mailbox.ONLY_MAILBOX_CALL SYMBOL origin sender chainId reciever receiver-guard amount))
+    (require-capability (mailbox.POST_PROCESS_CALL SYMBOL origin sender chainId reciever receiver-guard amount))
     (let ((router-address:string (has-remote-router origin)))
       (enforce (= sender router-address) "Sender is not router")
       (with-capability (INTERNAL)
