@@ -5,11 +5,9 @@
 (enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 (module merkle-tree-hook GOVERNANCE
-    ;; Interfaces
-    (implements hook-iface)
-
     ;; Imports
     (use hyperlane-message)
+    (use mailbox-iface-v2)
 
     ;; Capabilities
     (defcap GOVERNANCE () (enforce-guard "NAMESPACE.upgrade-admin"))
@@ -63,16 +61,32 @@
         branches:[string]
         count:integer)
 
+    (defschema dependency
+        mailbox:module{mailbox-iface-v2})
+
     ;; Tables
     (deftable tree-state:{tree-schema})
+    (deftable dependencies:{dependency})
     
     (defun initialize ()
         (with-capability (ONLY_ADMIN)
             (insert tree-state "default"
                 { "branches": (make-list TREE_DEPTH "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"), "count": 0 })))
 
+    (defun set-mailbox:string (mailbox:module{mailbox-iface-v2})
+        @doc "Stores a mailbox module in the dependencies table"
+        (with-capability (ONLY_ADMIN)
+            (write dependencies "default"
+                { "mailbox": mailbox })))
+
+    (defun get-mailbox:module{mailbox-iface-v2} ()
+        (with-read dependencies "default"
+            { "mailbox" := mailbox:module{mailbox-iface-v2} }
+            mailbox))
+
     (defun post-dispatch:bool (id:string message:object{hyperlane-message})
-        (require-capability (mailbox.POST_DISPATCH_CALL id))
+        (let ((mailbox:module{mailbox-iface-v2} (get-mailbox)))
+            (require-capability (mailbox::POST_DISPATCH_CALL id)))
         (with-capability (INTERNAL)
             (insert-node id)
             true))
@@ -153,5 +167,6 @@
 (if (read-msg "init")
   [
     (create-table NAMESPACE.merkle-tree-hook.tree-state)
+    (create-table NAMESPACE.merkle-tree-hook.dependencies)
   ]
   "Upgrade complete")

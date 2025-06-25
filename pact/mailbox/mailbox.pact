@@ -5,6 +5,9 @@
 (enforce-guard (keyset-ref-guard "NAMESPACE.bridge-admin"))
 
 (module mailbox GOVERNANCE
+   ;; Interfaces
+   (implements mailbox-iface-v2)
+
    ;; Imports
    (use hyperlane-message)
 
@@ -13,9 +16,6 @@
       paused:bool
       nonce:integer
       latest-dispatched-id:string)
-   
-   (defschema dependency
-      hook:module{hook-iface})
    
    (defschema delivery
       block-number:integer)
@@ -30,7 +30,6 @@
 
    ;; Tables
    (deftable contract-state:{mailbox-state})
-   (deftable dependencies:{dependency})
    (deftable deliveries:{delivery})
    (deftable hashes:{router-hash})
 
@@ -80,12 +79,6 @@
             (update contract-state "default"
                { "paused": paused })))
 
-   (defun define-hook:string (hook:module{hook-iface})
-      @doc "Defines hook in the contract"
-      (with-capability (ONLY_ADMIN)
-         (write dependencies "default"
-            { "hook": hook })))
-
    (defun store-router:string (router:module{router-iface})
       @doc "Stores a router in the contract"
          (with-capability (ONLY_ADMIN)
@@ -112,11 +105,6 @@
       (with-read contract-state "default"
          { "paused" := paused }
          paused))
-
-   (defun get-hook:module{hook-iface} ()
-      (with-read dependencies "default"
-         { "hook" := hook:module{hook-iface} }
-         hook))
 
    (defun delivered:bool (id:string)
       (with-default-read deliveries id
@@ -162,8 +150,7 @@
             (update-dispatch (nonce) id))
          (igp.pay-for-gas id destination (igp.quote-gas-payment destination))
          (with-capability (POST_DISPATCH_CALL id)
-            (let ((hook:module{hook-iface} (get-hook)))
-               (hook::post-dispatch id message))) 
+            (merkle-tree-hook.post-dispatch id message))
          (emit-event (DISPATCH 3 (- (nonce) 1) (get-router-hash router) destination recipient message-body))
          (emit-event (DISPATCH-ID id))
          id))
@@ -202,7 +189,6 @@
 (if (read-msg "init")
   [
       (create-table NAMESPACE.mailbox.contract-state)
-      (create-table NAMESPACE.mailbox.dependencies)
       (create-table NAMESPACE.mailbox.deliveries)
       (create-table NAMESPACE.mailbox.hashes)
   ]
