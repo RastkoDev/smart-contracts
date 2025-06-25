@@ -39,8 +39,8 @@
    (defcap ONLY_ADMIN () (enforce-guard "NAMESPACE.bridge-admin"))
    (defcap PAUSE () (enforce-guard "NAMESPACE.bridge-pausers"))
    (defcap INTERNAL () true)
-   (defcap POST_PROCESS_CALL:bool (m:module{router-iface} origin:integer sender:string chainId:integer recipient:string recipient-guard:guard amount:decimal) true)
    (defcap POST_DISPATCH_CALL:bool (id:string) true)
+   (defcap POST_PROCESS_CALL:bool (m:module{router-iface} origin:integer sender:string chainId:integer recipient:string recipient-guard:guard amount:decimal) true)
    (defcap PROCESS-MLC (message-id:string message:object{hyperlane-message} signers:[string] threshold:integer)
       (enforce-verifier "hyperlane_v3_message")
       (enforce (= 3 (at "version" message)) "Invalid hyperlane version")
@@ -74,11 +74,11 @@
          (insert contract-state "default"
             { "paused": false, "nonce": 0, "latest-dispatched-id": "0" })))
 
-   (defun pause:string (b:bool)
+   (defun pause:string (paused:bool)
       @doc "Pauses the contract"
          (with-capability (PAUSE)
             (update contract-state "default"
-               { "paused": b })))
+               { "paused": paused })))
 
    (defun define-hook:string (hook:module{hook-iface})
       @doc "Defines hook in the contract"
