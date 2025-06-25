@@ -10,7 +10,6 @@
 ;; module stores locations of validator's signatures.
 
 (module validator-announce GOVERNANCE
-  
   ;; Schemas
   (defschema validators
     known:bool)
