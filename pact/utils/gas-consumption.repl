@@ -69,7 +69,7 @@
                 "originDomain": data.eth-domain,
                 "sender": "AAAAAAAAAAAAAAAAS9NJkuCZTp08U8HM_lwuONkHM44",
                 "destinationDomain": data.kda-domain,
-                "recipient": (mailbox.get-router-hash hyp-erc20-collateral),
+                "recipient": (router.get-token-hash hyp-erc20-collateral),
                 "messageBody": encoded.message-chain0
             }
         )
@@ -99,7 +99,7 @@
                 "originDomain": data.eth-domain,
                 "sender": "AAAAAAAAAAAAAAAAS9NJkuCZTp08U8HM_lwuONkHM44",
                 "destinationDomain": data.kda-domain,
-                "recipient": (mailbox.get-router-hash hyp-erc20-collateral),
+                "recipient": (router.get-token-hash hyp-erc20-collateral),
                 "messageBody": encoded.message-chain1
             }
         )
@@ -129,7 +129,7 @@
                 "originDomain": data.eth-domain,
                 "sender": "AAAAAAAAAAAAAAAAS9NJkuCZTp08U8HM_lwuONkHM44",
                 "destinationDomain": data.kda-domain,
-                "recipient": (mailbox.get-router-hash hyp-erc20),
+                "recipient": (router.get-token-hash hyp-erc20),
                 "messageBody": encoded.message-chain0
             }
         )
@@ -159,7 +159,7 @@
                 "originDomain": data.eth-domain,
                 "sender": "AAAAAAAAAAAAAAAAS9NJkuCZTp08U8HM_lwuONkHM44",
                 "destinationDomain": data.kda-domain,
-                "recipient": (mailbox.get-router-hash hyp-erc20),
+                "recipient": (router.get-token-hash hyp-erc20),
                 "messageBody": encoded.message-chain1
             }
         )

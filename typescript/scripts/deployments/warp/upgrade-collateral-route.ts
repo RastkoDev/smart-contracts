@@ -2,7 +2,7 @@ import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { ba_account, getClientDatas, ua_account } from "../../utils/constants";
 import { upgradeHypERC20Coll } from "./upgrade-warp-module";
 import { toHex, walletActions } from "viem";
-import { enrollRemoteRouter, getRouterHash } from "./deploy-warp-modules";
+import { enrollRemoteRouter, getTokenHash } from "./deploy-warp-modules";
 import { hexToBase64 } from "./warp-utils";
 import { TxData } from "../../utils/interfaces";
 
@@ -54,7 +54,7 @@ export const upgradeCollateralWarpRoute = async (
   await Promise.all(promises);
 
   const routerKDA = (
-    (await getRouterHash(clientDatas[0], tokenSymbolKDA)) as unknown as TxData
+    (await getTokenHash(clientDatas[0], tokenSymbolKDA)) as unknown as TxData
   ).data;
   const routerEVM = hexToBase64(
     "0x000000000000000000000000" + hypERC20.address.slice(2),
