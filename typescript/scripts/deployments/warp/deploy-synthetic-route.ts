@@ -8,7 +8,7 @@ import {
 } from "../../utils/constants";
 import {
   getTokenHash,
-  storeTokenToMailbox,
+  storeTokenToRouter,
   enrollRemoteRouter,
   deployHypERC20Synth,
 } from "./deploy-warp-modules";
@@ -85,7 +85,7 @@ export const deploySyntheticWarpRoute = async (
 
   await Promise.all([
     hypERC20Collateral.write.enrollRemoteRouter([domainKDA, toHex(routerKDA)]),
-    storeTokenToMailbox(clientDatas[0], ba_account, ba_account, tokenSymbolKDA),
+    storeTokenToRouter(clientDatas[0], ba_account, ba_account, tokenSymbolKDA),
     enrollRemoteRouter(
       clientDatas[0],
       ba_account,

@@ -97,7 +97,7 @@ export const enrollRemoteRouter = async (
 ) => {
   const enrollCommand = `
     (namespace "${NAMESPACES[client.phase as keyof IDomains]}")
-    (router.enroll-remote-router ${remoteRouterDomain} "${token}" "${remoteRouterAddress}")`;
+    (router.enroll-remote-router ${remoteRouterDomain} ${token} "${remoteRouterAddress}")`;
   const capabilities: ICapability[] = [
     { name: "coin.GAS" },
     {
@@ -125,7 +125,7 @@ export const getTokenHash = async (
   return result;
 };
 
-export const storeTokenToMailbox = async (
+export const storeTokenToRouter = async (
   client: IClientWithData,
   sender: IAccountWithKeys,
   account: IAccountWithKeys,
@@ -134,7 +134,7 @@ export const storeTokenToMailbox = async (
   const command = `(namespace "${NAMESPACES[client.phase as keyof IDomains]}")
     (router.store-token-hash ${routerName})`;
   const result = await submitSignedTx(client, sender, account, command);
-  console.log(`\nStoring router to Mailbox`);
+  console.log(`\nStoring router to Router`);
   console.log(result);
 };
 
