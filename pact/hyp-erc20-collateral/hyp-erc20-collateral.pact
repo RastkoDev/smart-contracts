@@ -26,10 +26,6 @@
     (enforce-guard (get-collateral-guard sender))
     (enforce-balance sender amount))
 
-  (defcap TRANSFER_TO (chainId:integer)
-    ; todo add guard
-    (enforce (and (<= chainId 19) (>= chainId 0)) "Invalid target chain ID"))
-
   ;; Precision
   (defun precision:integer () 18)
 
@@ -58,12 +54,12 @@
         { "collateral" := collateral:module{fungible-v2, fungible-xchain-v1} }
         (collateral::transfer sender COLLATERAL_ACCOUNT amount))))
 
-  (defun transfer-to (receiver:string receiver-guard:guard amount:decimal chainId:integer)
-    (with-capability (TRANSFER_TO chainId)
-      (with-capability (INTERNAL)
-        (if (= (int-to-str 10 chainId) (at "chain-id" (chain-data)))
-          (transfer-create-to receiver receiver-guard amount)
-          (transfer-create-to-crosschain receiver receiver-guard amount (int-to-str 10 chainId))))))
+  (defun TRANSFER_TO (receiver:string receiver-guard:guard amount:decimal chainId:integer)
+    (require-capability (router.TRANSFER_TO hyp-erc20-collateral receiver amount chainId))
+    (with-capability (INTERNAL)
+      (if (= (int-to-str 10 chainId) (at "chain-id" (chain-data)))
+        (transfer-create-to receiver receiver-guard amount)
+        (transfer-create-to-crosschain receiver receiver-guard amount (int-to-str 10 chainId)))))
 
   (defun transfer-create-to (receiver:string receiver-guard:guard amount:decimal)
     (require-capability (INTERNAL))

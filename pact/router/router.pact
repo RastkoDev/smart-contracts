@@ -31,6 +31,9 @@
     (enforce (!= destination "0") "Invalid destination")
     (enforce (!= recipient "") "Recipient cannot be empty.")
     (enforce (> amount 0.0) "Transfer must be positive."))
+  (defcap TRANSFER_TO:bool (token:module{token-iface} recipient:string amount:decimal chainId:integer)
+    (enforce (> amount 0.0) "Transfer must be positive.")
+    (enforce (and (<= chainId 19) (>= chainId 0)) "Invalid target chain ID"))
 
   ;; Events
   (defcap RECEIVED_TRANSFER_REMOTE (origin:integer recipient:string amount:decimal)
@@ -101,7 +104,8 @@
       (require-capability (mailbox::POST_PROCESS_CALL token origin sender chainId receiver receiver-guard amount)))
     (let ((remote-address:string (has-remote-router origin token)))
       (enforce (= sender remote-address) "Sender is not router"))
-    (token::transfer-to receiver receiver-guard (get-adjusted-amount-back token amount) chainId)
+    (with-capability (TRANSFER_TO token receiver (get-adjusted-amount-back token amount) chainId)
+      (token::TRANSFER_TO receiver receiver-guard (get-adjusted-amount-back token amount) chainId))
     (emit-event (RECEIVED_TRANSFER_REMOTE origin receiver (get-adjusted-amount-back token amount)))
     true))
 

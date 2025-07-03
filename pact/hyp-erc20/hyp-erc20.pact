@@ -28,10 +28,6 @@
     (enforce (!= sender "") "Sender cannot be empty.")
     (enforce-guard (at 'guard (read accounts sender)))
     (enforce-balance sender amount))
-  
-  (defcap TRANSFER_TO (chainId:integer)
-    ; todo add guard
-    (enforce (and (<= chainId 19) (>= chainId 0)) "Invalid target chain ID"))
 
   ;; Precision
   (defun precision:integer () 18)
@@ -42,12 +38,12 @@
       (with-default-read accounts sender { "balance": 0.0 } { "balance" := balance }
         (update accounts sender { "balance": (- balance amount)}))))
 
-  (defun transfer-to (receiver:string receiver-guard:guard amount:decimal chainId:integer)
-    (with-capability (TRANSFER_TO chainId)
-      (with-capability (INTERNAL)
-        (if (= (int-to-str 10 chainId) (at "chain-id" (chain-data)))
-          (transfer-create-to receiver receiver-guard amount)
-          (transfer-create-to-crosschain receiver receiver-guard amount (int-to-str 10 chainId))))))
+  (defun TRANSFER_TO (receiver:string receiver-guard:guard amount:decimal chainId:integer)
+    (require-capability (router.TRANSFER_TO hyp-erc20 receiver amount chainId))
+    (with-capability (INTERNAL)
+      (if (= (int-to-str 10 chainId) (at "chain-id" (chain-data)))
+        (transfer-create-to receiver receiver-guard amount)
+        (transfer-create-to-crosschain receiver receiver-guard amount (int-to-str 10 chainId)))))
 
   (defun transfer-create-to (receiver:string receiver-guard:guard amount:decimal)
     (require-capability (INTERNAL))
