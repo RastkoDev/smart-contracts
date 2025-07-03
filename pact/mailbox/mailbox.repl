@@ -194,16 +194,10 @@
 (namespace "NAMESPACE")
 (expect "Nonce before the dispatch" 0 (mailbox.nonce))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [
-    (coin.TRANSFER
-        bridge-keys.alice-principal
-        (hyp-erc20-collateral.get-collateral-account)
-        699.0
-    )
-    (coin.TRANSFER
-        bridge-keys.alice-principal
-        igp.IGP_ACCOUNT
-        (igp.quote-gas-payment data.eth-domain)
-    )
+    (coin.TRANSFER bridge-keys.alice-principal (hyp-erc20-collateral.get-collateral-account) 699.0)
+    (coin.TRANSFER bridge-keys.alice-principal igp.IGP_ACCOUNT (igp.quote-gas-payment data.eth-domain))
+    (router.TRANSFER_REMOTE data.eth-domain bridge-keys.alice-principal bridge-keys.alice 699.0)
+    (hyp-erc20-collateral.TRANSFER_FROM bridge-keys.alice-principal 699.0)
 ]}])
 (env-chain-data { "sender": bridge-keys.alice-principal })
 (mailbox.dispatch hyp-erc20-collateral data.eth-domain bridge-keys.alice 699.0)
@@ -341,8 +335,9 @@
 (namespace "NAMESPACE")
 (expect "Nonce before the dispatch" 1 (mailbox.nonce))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [
-    (router.TRANSFER_REMOTE data.eth-domain bridge-keys.alice-principal bridge-keys.alice 10.0)
     (coin.TRANSFER bridge-keys.alice-principal igp.IGP_ACCOUNT (igp.quote-gas-payment data.eth-domain))
+    (router.TRANSFER_REMOTE data.eth-domain bridge-keys.alice-principal bridge-keys.alice 10.0)
+    (hyp-erc20.TRANSFER_FROM bridge-keys.alice-principal 10.0)
 ]}])
 (env-chain-data { "sender": bridge-keys.alice-principal })
 (mailbox.dispatch hyp-erc20 data.eth-domain bridge-keys.alice 10.0)

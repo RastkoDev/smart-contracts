@@ -26,23 +26,17 @@
 ;; transfer-from ;; success      
 (begin-tx)
 (namespace "NAMESPACE")
-(expect "Alice balance before the dispatch" 1000.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance before the dispatch" 1000.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (expect "Treasury balance before the dispatch" 0.0 (coin.get-balance (hyp-erc20-collateral.get-collateral-account)))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [ 
-    (coin.TRANSFER 
-        bridge-keys.alice-principal
-        (hyp-erc20-collateral.get-collateral-account) 
-        699.0
-    )
-    (coin.TRANSFER
-        bridge-keys.alice-principal
-        igp.IGP_ACCOUNT 
-        (igp.quote-gas-payment data.eth-domain)
-    )
+    (coin.TRANSFER  bridge-keys.alice-principal (hyp-erc20-collateral.get-collateral-account) 699.0)
+    (coin.TRANSFER bridge-keys.alice-principal igp.IGP_ACCOUNT (igp.quote-gas-payment data.eth-domain))
+    (router.TRANSFER_REMOTE data.eth-domain bridge-keys.alice-principal bridge-keys.alice 699.0)
+    (hyp-erc20-collateral.TRANSFER_FROM bridge-keys.alice-principal 699.0)
 ]}])
 (env-chain-data { "sender": bridge-keys.alice-principal })
 (mailbox.dispatch hyp-erc20-collateral data.eth-domain bridge-keys.alice 699.0)
-(expect "Alice balance after the dispatch" 300.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance after the dispatch" 300.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (expect "Treasury balance after the dispatch" 699.0 (coin.get-balance (hyp-erc20-collateral.get-collateral-account)))
 (commit-tx)
 
@@ -53,7 +47,7 @@
 
 (env-chain-data { "chain-id": "0"})
 (env-hash (hash "crosschain-step-1"))
-(expect "Alice balance before the process" 300.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance before the process" 300.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (expect "Treasury balance before the process" 699.0 (coin.get-balance (hyp-erc20-collateral.get-collateral-account)))
 (let*
     (
@@ -74,7 +68,7 @@
     (expect-failure "Sender is not router" (mailbox.process id message))
 )
 (env-chain-data { "chain-id" : "0" })
-(expect "Alice balance after the process" 300.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance after the process" 300.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (expect "Treasury balance after the process" 699.0 (coin.get-balance (hyp-erc20-collateral.get-collateral-account)))
 (commit-tx)
 
@@ -85,7 +79,7 @@
 
 (env-chain-data { "chain-id": "0"})
 (env-hash (hash "crosschain-step-1"))
-(expect "Alice balance before the process" 300.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance before the process" 300.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (expect "Treasury balance before the process" 699.0 (coin.get-balance (hyp-erc20-collateral.get-collateral-account)))
 (let*
     (
@@ -106,7 +100,7 @@
     (mailbox.process id message)
 )
 (env-chain-data { "chain-id" : "0" })
-(expect "Alice balance after the process" 315.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance after the process" 315.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (expect "Treasury balance after the process" 684.0 (coin.get-balance (hyp-erc20-collateral.get-collateral-account)))
 (commit-tx)
 
@@ -117,7 +111,7 @@
 
 (env-chain-data { "chain-id": "0"})
 (env-hash (hash "crosschain-step-1"))
-(expect "Alice balance before the process" 315.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance before the process" 315.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (expect "Treasury balance before the process" 684.0 (coin.get-balance (hyp-erc20-collateral.get-collateral-account)))
 (let*
     (
@@ -138,7 +132,7 @@
     (expect-failure "Sender is not router" (mailbox.process id message))
 )
 (env-chain-data { "chain-id" : "1" })
-(expect "Alice balance after the process" 315.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance after the process" 315.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (expect "Treasury balance after the process" 684.0 (coin.get-balance (hyp-erc20-collateral.get-collateral-account)))
 (commit-tx)
 
@@ -149,7 +143,7 @@
 
 (env-chain-data { "chain-id": "0"})
 (env-hash (hash "crosschain-step-1"))
-(expect "Alice balance before the process" 315.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance before the process" 315.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (expect "Treasury balance before the process" 684.0 (coin.get-balance (hyp-erc20-collateral.get-collateral-account)))
 (let*
     (
@@ -171,9 +165,6 @@
 )
 (env-chain-data { "chain-id" : "1" })
 (continue-pact 1 false (hash "crosschain-step-1"))
-(expect "Alice balance after the process" 330.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance after the process" 330.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (expect "Treasury balance after the process" 669.0 (coin.get-balance (hyp-erc20-collateral.get-collateral-account)))
 (commit-tx)
-
-;; TODO transfer-from
-;; TODO transfer-to

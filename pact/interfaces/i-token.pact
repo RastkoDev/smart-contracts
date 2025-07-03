@@ -4,12 +4,10 @@
 
 (interface token-iface
     (defcap TRANSFER_FROM (sender:string amount:decimal)
-        @doc "Capability to transfer tokens from a sender"
-        @managed)
+        @doc "Capability to transfer tokens from a sender")
     
     (defcap TRANSFER_TO (chainId:integer)
-        @doc "Capability to transfer tokens to a receiver on a target chain"
-        @managed)
+        @doc "Capability to transfer tokens to a receiver on a target chain")
 
     (defun precision:integer ()
         "Returns the precision of the token, e.g. 18 for ETH, 6 for USDC")

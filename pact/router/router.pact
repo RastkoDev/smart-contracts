@@ -93,7 +93,6 @@
   (defun transfer-remote:string (token:module{token-iface} destination:integer sender:string recipient-tm:string amount:decimal)
     (with-capability (TRANSFER_REMOTE destination sender recipient-tm amount)
       (let ((remote-address:string (has-remote-router destination token)))
-        (install-capability (token::TRANSFER_FROM sender amount))
         (token::transfer-from sender amount)
         remote-address)))
   
@@ -102,7 +101,6 @@
       (require-capability (mailbox::POST_PROCESS_CALL token origin sender chainId receiver receiver-guard amount)))
     (let ((remote-address:string (has-remote-router origin token)))
       (enforce (= sender remote-address) "Sender is not router"))
-    (install-capability (token::TRANSFER_TO chainId))
     (token::transfer-to receiver receiver-guard (get-adjusted-amount-back token amount) chainId)
     (emit-event (RECEIVED_TRANSFER_REMOTE origin receiver (get-adjusted-amount-back token amount)))
     true))

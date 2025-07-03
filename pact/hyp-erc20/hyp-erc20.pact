@@ -25,13 +25,11 @@
   (defcap INTERNAL () true)
   
   (defcap TRANSFER_FROM (sender:string amount:decimal)
-    @managed
     (enforce (!= sender "") "Sender cannot be empty.")
     (enforce-guard (at 'guard (read accounts sender)))
     (enforce-balance sender amount))
   
   (defcap TRANSFER_TO (chainId:integer)
-    @managed
     ; todo add guard
     (enforce (and (<= chainId 19) (>= chainId 0)) "Invalid target chain ID"))
 
@@ -40,16 +38,16 @@
 
   ;; Token
   (defun transfer-from (sender:string amount:decimal)
-    ;  todo (require-capability (TRANSFER_FROM sender amount))
-    (with-default-read accounts sender { "balance": 0.0 } { "balance" := balance }
-      (update accounts sender { "balance": (- balance amount)})))
+    (with-capability (TRANSFER_FROM sender amount)
+      (with-default-read accounts sender { "balance": 0.0 } { "balance" := balance }
+        (update accounts sender { "balance": (- balance amount)}))))
 
   (defun transfer-to (receiver:string receiver-guard:guard amount:decimal chainId:integer)
-    ;  todo (require-capability (TRANSFER_TO chainId))
-    (with-capability (INTERNAL)
-      (if (= (int-to-str 10 chainId) (at "chain-id" (chain-data)))
-        (transfer-create-to receiver receiver-guard amount)
-        (transfer-create-to-crosschain receiver receiver-guard amount (int-to-str 10 chainId)))))
+    (with-capability (TRANSFER_TO chainId)
+      (with-capability (INTERNAL)
+        (if (= (int-to-str 10 chainId) (at "chain-id" (chain-data)))
+          (transfer-create-to receiver receiver-guard amount)
+          (transfer-create-to-crosschain receiver receiver-guard amount (int-to-str 10 chainId))))))
 
   (defun transfer-create-to (receiver:string receiver-guard:guard amount:decimal)
     (require-capability (INTERNAL))

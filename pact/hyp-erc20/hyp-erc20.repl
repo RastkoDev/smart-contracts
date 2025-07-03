@@ -38,9 +38,11 @@
 (begin-tx)
 (namespace "NAMESPACE")
 (expect-failure "Alice balance before the dispatch" (hyp-erc20.get-balance bridge-keys.alice-principal))
-(expect "Alice balance before the dispatch" 1000.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance before the dispatch" 1000.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [
     (coin.TRANSFER bridge-keys.alice-principal igp.IGP_ACCOUNT (igp.quote-gas-payment data.eth-domain))
+    (router.TRANSFER_REMOTE data.eth-domain bridge-keys.alice-principal bridge-keys.alice 10.0)
+    (hyp-erc20.TRANSFER_FROM bridge-keys.alice-principal 10.0)
 ]}])
 (env-chain-data { "sender": bridge-keys.alice-principal })
 (expect-failure "Not enough funds" (mailbox.dispatch hyp-erc20 data.eth-domain bridge-keys.alice-principal 10.0))
@@ -54,7 +56,7 @@
 (env-chain-data { "chain-id": "0"})
 (env-hash (hash "crosschain-step-1"))
 (expect-failure "Alice balance before the process" (hyp-erc20.get-balance bridge-keys.alice-principal))
-(expect "Alice balance before the process" 1000.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance before the process" 1000.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (let*
     (
         (message:object{hyperlane-message}
@@ -75,7 +77,7 @@
 )
 (env-chain-data { "chain-id" : "0" })
 (expect-failure "Alice balance after the process" (hyp-erc20.get-balance bridge-keys.alice-principal))
-(expect "Alice balance after the process" 1000.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance after the process" 1000.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (commit-tx)
 
 ;; transfer-to ;; transfer-create-to ;; success
@@ -86,7 +88,7 @@
 (env-chain-data { "chain-id": "0"})
 (env-hash (hash "crosschain-step-1"))
 (expect-failure "Alice balance before the process" (hyp-erc20.get-balance bridge-keys.alice-principal))
-(expect "Alice balance before the process" 1000.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance before the process" 1000.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (let*
     (
         (message:object{hyperlane-message}
@@ -107,7 +109,7 @@
 )
 (env-chain-data { "chain-id" : "0" })
 (expect "Alice balance after the process" 15.0 (hyp-erc20.get-balance bridge-keys.alice-principal))
-(expect "Alice balance after the process" 1000.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance after the process" 1000.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (commit-tx)
 
 ;; transfer-to ;; transfer-create-to-crosschain ;; fail wrong sender
@@ -118,7 +120,7 @@
 (env-chain-data { "chain-id": "0"})
 (env-hash (hash "crosschain-step-1"))
 (expect "Alice balance before the process" 15.0 (hyp-erc20.get-balance bridge-keys.alice-principal))
-(expect "Alice balance before the process" 1000.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance before the process" 1000.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (let*
     (
         (message:object{hyperlane-message}
@@ -139,7 +141,7 @@
 )
 (env-chain-data { "chain-id" : "1" })
 (expect "Alice balance after the process" 15.0 (hyp-erc20.get-balance bridge-keys.alice-principal))
-(expect "Alice balance after the process" 1000.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance after the process" 1000.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (commit-tx)
 
 ;; transfer-to ;; transfer-create-to-crosschain ;; success
@@ -150,7 +152,7 @@
 (env-chain-data { "chain-id": "0"})
 (env-hash (hash "crosschain-step-1"))
 (expect "Alice balance before the process" 15.0 (hyp-erc20.get-balance bridge-keys.alice-principal))
-(expect "Alice balance before the process" 1000.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance before the process" 1000.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (let*
     (
         (message:object{hyperlane-message}
@@ -172,24 +174,22 @@
 (env-chain-data { "chain-id" : "1" })
 (continue-pact 1 false (hash "crosschain-step-1"))
 (expect "Alice balance after the process" 30.0 (hyp-erc20.get-balance bridge-keys.alice-principal))
-(expect "Alice balance after the process" 1000.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance after the process" 1000.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (commit-tx)
 
 ;; transfer-from ;; success
 (begin-tx)
 (namespace "NAMESPACE")
 (expect "Alice balance before the dispatch" 30.0 (hyp-erc20.get-balance bridge-keys.alice-principal))
-(expect "Alice balance before the dispatch" 1000.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance before the dispatch" 1000.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (env-sigs [ { "key": bridge-keys.alice, "caps": [
-    (router.TRANSFER_REMOTE data.eth-domain bridge-keys.alice-principal bridge-keys.alice 10.0)
     (coin.TRANSFER bridge-keys.alice-principal igp.IGP_ACCOUNT (igp.quote-gas-payment data.eth-domain))
+    (router.TRANSFER_REMOTE data.eth-domain bridge-keys.alice-principal bridge-keys.alice 10.0)
+    (hyp-erc20.TRANSFER_FROM bridge-keys.alice-principal 10.0)
 ]}])
 (env-chain-data { "sender": bridge-keys.alice-principal })
 (mailbox.dispatch hyp-erc20 data.eth-domain bridge-keys.alice 10.0)
 (expect "Alice balance after the dispatch" 20.0 (hyp-erc20.get-balance bridge-keys.alice-principal))
-(expect "Alice balance after the dispatch" 999.0 (hyp-erc20-collateral.get-balance bridge-keys.alice-principal))
+(expect "Alice balance after the dispatch" 999.0 (hyp-erc20-collateral.get-collateral-balance bridge-keys.alice-principal))
 (commit-tx)
-
-;; TODO transfer-from
-;; TODO transfer-to
 

@@ -22,13 +22,11 @@
   (defcap INTERNAL () true)
 
   (defcap TRANSFER_FROM (sender:string amount:decimal)
-    @managed
     (enforce (!= sender "") "Sender cannot be empty.")
     (enforce-guard (get-collateral-guard sender))
     (enforce-balance sender amount))
 
   (defcap TRANSFER_TO (chainId:integer)
-    @managed
     ; todo add guard
     (enforce (and (<= chainId 19) (>= chainId 0)) "Invalid target chain ID"))
 
@@ -55,17 +53,17 @@
 
   ;; Token
   (defun transfer-from (sender:string amount:decimal)
-    ;  todo (require-capability (TRANSFER_FROM sender amount))
-    (with-read contract-state "default"
-      { "collateral" := collateral:module{fungible-v2, fungible-xchain-v1} }
-      (collateral::transfer sender COLLATERAL_ACCOUNT amount)))
+    (with-capability (TRANSFER_FROM sender amount)
+      (with-read contract-state "default"
+        { "collateral" := collateral:module{fungible-v2, fungible-xchain-v1} }
+        (collateral::transfer sender COLLATERAL_ACCOUNT amount))))
 
   (defun transfer-to (receiver:string receiver-guard:guard amount:decimal chainId:integer)
-    ;  todo (require-capability (TRANSFER_TO chainId))
-    (with-capability (INTERNAL)
-      (if (= (int-to-str 10 chainId) (at "chain-id" (chain-data)))
-        (transfer-create-to receiver receiver-guard amount)
-        (transfer-create-to-crosschain receiver receiver-guard amount (int-to-str 10 chainId)))))
+    (with-capability (TRANSFER_TO chainId)
+      (with-capability (INTERNAL)
+        (if (= (int-to-str 10 chainId) (at "chain-id" (chain-data)))
+          (transfer-create-to receiver receiver-guard amount)
+          (transfer-create-to-crosschain receiver receiver-guard amount (int-to-str 10 chainId))))))
 
   (defun transfer-create-to (receiver:string receiver-guard:guard amount:decimal)
     (require-capability (INTERNAL))
@@ -84,7 +82,7 @@
         (collateral::transfer-crosschain COLLATERAL_ACCOUNT receiver receiver-guard target-chain amount))))
 
   (defun enforce-balance (sender:string amount:decimal)
-    (let ((balance (get-balance sender)))
+    (let ((balance (get-collateral-balance sender)))
       (enforce (<= amount balance) (format "Cannot burn more funds than the account has available: {}" [balance]))))
 
   ;; Collateral
@@ -98,7 +96,7 @@
       { "collateral" := collateral:module{fungible-v2, fungible-xchain-v1} }
       (at 'guard (collateral::details account))))
 
-  (defun get-balance:decimal (account:string)
+  (defun get-collateral-balance:decimal (account:string)
     (with-read contract-state "default"
       { "collateral" := collateral:module{fungible-v2, fungible-xchain-v1} }
       (collateral::get-balance account))))
