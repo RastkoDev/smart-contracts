@@ -26,8 +26,9 @@ sequenceDiagram
 
     MailboxKDA->>HypERC20KDA: call handle
 
-    HypERC20KDA->>HypERC20KDA: transfer (create-to) to recepient
     HypERC20KDA->>HypERC20KDA: emits RECEIVED_TRANSFER_REMOTE
+
+    HypERC20KDA->>HypERC20KDA: call transfer (create-to) to recepient
 ```
 
 
@@ -42,7 +43,7 @@ sequenceDiagram
     participant HypERC20KDA as HypERC20Collateral
 
     User->>HypERC20: call transferRemote
-    HypERC20->>HypERC20: burns tokens
+    HypERC20->>HypERC20: burn tokens
 
     HypERC20->>HypERC20: emit SentTransferRemote
     HypERC20->>MailboxETH: call dispatch
@@ -56,7 +57,6 @@ sequenceDiagram
 
     MailboxKDA->>HypERC20KDA: call handle
 
-    HypERC20KDA->>HypERC20KDA: transfers to recepient
     HypERC20KDA->>HypERC20KDA: emits RECEIVED_TRANSFER_REMOTE
 ```
 
@@ -85,7 +85,7 @@ sequenceDiagram
 
     MailboxKDA->>HypERC20: call handle
 
-    HypERC20->>HypERC20: transfer (create-to) to recepient
+    HypERC20->>HypERC20: call transfer (crexate-to) to recepient
     HypERC20->>HypERC20: emits RECEIVED_TRANSFER_REMOTE
 ```
 
@@ -114,8 +114,9 @@ sequenceDiagram
 
     MailboxKDA->>HypERC20KDA: call handle
 
-    HypERC20KDA->>HypERC20KDA: transfers to recepient
     HypERC20KDA->>HypERC20KDA: emits RECEIVED_TRANSFER_REMOTE
+
+    HypERC20KDA->>HypERC20KDA: call transfers to recepient
 ```
 
 ## From KDA to ETH
@@ -124,18 +125,18 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant User
-    participant HypERC20KDA as HypERC20
     participant MailboxKDA as MailboxKDA
+    participant HypERC20KDA as HypERC20
     participant Relayer
     participant MailboxETH as MailboxEVM
     participant HypNative as HypNative
 
-    User->>HypERC20KDA: call transfer-remote
-    HypERC20KDA->>HypERC20KDA: burns tokens
+    User->>MailboxKDA: call dispatch
+    MailboxKDA->>HypERC20KDA: call transfer-remote
+    HypERC20KDA->>HypERC20KDA: burn tokens
     HypERC20KDA->>HypERC20KDA: transfers to IGP (gas amount from quote-gas-payment)
     HypERC20KDA->>HypERC20KDA: emit SENT_TRANSFER_REMOTE
 
-    HypERC20KDA->>MailboxKDA: call dispatch
     MailboxKDA->>MailboxKDA: emits DISPATCH, DISPATCH-ID
     Relayer->>MailboxKDA: listen for events
     Relayer->>MailboxETH: call process
@@ -149,18 +150,18 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant User
-    participant HypERC20KDA as HypERC20Colateral
     participant MailboxKDA as MailboxKDA
+    participant HypERC20KDA as HypERC20Colateral
     participant Relayer
     participant MailboxETH as MailboxEVM
     participant HypERC20ETH as HypERC20
 
-    User->>HypERC20KDA: call transfer-remote
-    HypERC20KDA->>HypERC20KDA: transfers to router (amount)
+    User->>MailboxKDA: call dispatch
+    MailboxKDA->>HypERC20KDA: call transfer-remote
+    HypERC20KDA->>HypERC20KDA: burn tokens
     HypERC20KDA->>HypERC20KDA: transfers to IGP (gas amount from quote-gas-payment)
     HypERC20KDA->>HypERC20KDA: emit SENT_TRANSFER_REMOTE
 
-    HypERC20KDA->>MailboxKDA: call dispatch
     MailboxKDA->>MailboxKDA: emits DISPATCH, DISPATCH-ID
     Relayer->>MailboxKDA: listen for events
     Relayer->>MailboxETH: call process
@@ -174,18 +175,18 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant User
-    participant HypERC20KDA as HypERC20KDA
     participant MailboxKDA as MailboxKDA
+    participant HypERC20KDA as HypERC20KDA
     participant Relayer
     participant MailboxETH as MailboxEVM
     participant HypERC20ETH as HypERC20Collateral
 
-    User->>HypERC20KDA: call transfer-remote
+    User->>MailboxKDA: call dispatch
+    MailboxKDA->>HypERC20KDA: call transfer-remote
     HypERC20KDA->>HypERC20KDA: burns tokens
     HypERC20KDA->>HypERC20KDA: transfers to IGP (gas amount from quote-gas-payment)
     HypERC20KDA->>HypERC20KDA: emit SENT_TRANSFER_REMOTE
 
-    HypERC20KDA->>MailboxKDA: call dispatch
     MailboxKDA->>MailboxKDA: emits DISPATCH, DISPATCH-ID
     Relayer->>MailboxKDA: listen for events
     Relayer->>MailboxETH: call process
@@ -200,18 +201,18 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     participant User
-    participant HypERC20KDA as HypERC20Collateral
     participant MailboxKDA as MailboxKDA
+    participant HypERC20KDA as HypERC20Collateral
     participant Relayer
     participant MailboxETH as MailboxEVM
     participant HypERC20ETH as HypERC20Collateral
 
-    User->>HypERC20KDA: call transfer-remote
-    HypERC20KDA->>HypERC20KDA: transfers to router (amount)
+    User->>MailboxKDA: call dispatch
+    MailboxKDA->>HypERC20KDA: call transfer-remote
+    HypERC20KDA->>HypERC20KDA: call transfers to router (amount)
     HypERC20KDA->>HypERC20KDA: transfers to IGP (gas amount from quote-gas-payment)
     HypERC20KDA->>HypERC20KDA: emit SENT_TRANSFER_REMOTE
 
-    HypERC20KDA->>MailboxKDA: call dispatch
     MailboxKDA->>MailboxKDA: emits DISPATCH, DISPATCH-ID
     Relayer->>MailboxKDA: listen for events
     Relayer->>MailboxETH: call process
@@ -221,3 +222,4 @@ sequenceDiagram
     HypERC20ETH->>HypERC20ETH: transfers token to recepient
     HypERC20ETH->>HypERC20ETH: emits ReceivedTransferRemote
 ```
+
