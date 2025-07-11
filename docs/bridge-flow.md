@@ -1,77 +1,225 @@
-## Sequence Diagram
+# Sequence Diagram
 
-### ETH Collateral => KDA Synthetic
+## From ETH to KDA
 
-**from ETH to KDA**
-
+### ETH => HypERC20
 ```mermaid
 sequenceDiagram
-    participant U as User
-    participant MEVM as Mailbox on EVM
-    participant EVM as HypERC20Collateral
-    participant BE as Backend Service
-    participant MKDA as Mailbox on KDA
-    participant KDA as hyp-erc20
+    participant User
+    participant HypNative as HypNative
+    participant MailboxETH as MailboxEVM
+    participant Relayer
+    participant MailboxKDA as MailboxKDA
+    participant HypERC20KDA as HypERC20
 
-    U->>MEVM: call dispatch on EVM
-    MEVM->>EVM: send HypERC20Collateral from User to Treasury
-    EVM->>BE: send the data
-    BE->>MKDA: call process on KDA
-    MKDA->>KDA: mint hyp-erc20 to User
+    User->>HypNative: call transferRemote
+    HypNative->>HypNative: sends ETH to router (payable transferRemote)
+    HypNative->>HypNative: emit SentTransferRemote
+    HypNative->>MailboxETH: call dispatch
+    MailboxETH->>MailboxETH: emits Dispatch and DispatchID
+    MailboxETH->>MailboxETH: perform checks (igp)
+    Relayer->>MailboxETH: listen for events
+    Relayer->>MailboxKDA: call process
+
+    MailboxKDA->>MailboxKDA: checks PROCESS-MLC (ism)
+    MailboxKDA->>MailboxKDA: emits PROCESS and PROCESS-ID 
+
+    MailboxKDA->>HypERC20KDA: call handle
+
+    HypERC20KDA->>HypERC20KDA: emits RECEIVED_TRANSFER_REMOTE
+
+    HypERC20KDA->>HypERC20KDA: call transfer (create-to) to recepient
 ```
 
-**from KDA to ETH**
 
+### HypERC20 => ERC20Collateral
 ```mermaid
 sequenceDiagram
-    participant U as User
-    participant MKDA as Mailbox on KDA
-    participant KDA as hyp-erc20
-    participant BE as Backend Service
-    participant MEVM as Mailbox on EVM
-    participant EVM as HypERC20Collateral
+    participant User
+    participant HypERC20 as HypERC20
+    participant MailboxETH as MailboxEVM
+    participant Relayer
+    participant MailboxKDA as MailboxKDA
+    participant HypERC20KDA as HypERC20Collateral
 
-    U->>MKDA: call dispatch on KDA
-    MKDA->>KDA: mint hyp-erc20 from User
-    KDA->>BE: send the data
-    BE->>MEVM: call process on EVM
-    MEVM->>EVM: send HypERC20Collateral from Treasury to User
+    User->>HypERC20: call transferRemote
+    HypERC20->>HypERC20: burn tokens
+
+    HypERC20->>HypERC20: emit SentTransferRemote
+    HypERC20->>MailboxETH: call dispatch
+    MailboxETH->>MailboxETH: emits Dispatch and DispatchID
+    MailboxETH->>MailboxETH: perform checks (igp)
+    Relayer->>MailboxETH: listen for events
+    Relayer->>MailboxKDA: call process
+
+    MailboxKDA->>MailboxKDA: checks PROCESS-MLC (ism)
+    MailboxKDA->>MailboxKDA: emits PROCESS and PROCESS-ID 
+
+    MailboxKDA->>HypERC20KDA: call handle
+
+    HypERC20KDA->>HypERC20KDA: emits RECEIVED_TRANSFER_REMOTE
 ```
 
-# KDA Collateral => ETH Synthetic
-
-**from KDA to ETH**
-
+### ERC20Collateral => HypERC20
 ```mermaid
 sequenceDiagram
-    participant U as User
-    participant MKDA as Mailbox on KDA
-    participant KDA as hyp-erc20
-    participant BE as Backend Service
-    participant MEVM as Mailbox on EVM
-    participant EVM as HypERC20Collateral
+    participant User
+    participant HypERC20ETH as HypERC20Collateral
+    participant MailboxETH as MailboxEVM
+    participant Relayer
+    participant MailboxKDA as MailboxKDA
+    participant HypERC20 as HypERC20
 
-    U->>MKDA: call dispatch on KDA
-    MKDA->>KDA: send hyp-erc20-collateral from User to Treasury
-    KDA->>BE: send the data
-    BE->>MEVM: call process on EVM
-    MEVM->>EVM: mint HypERC20 to User
+    User->>HypERC20ETH: call transferRemote
+    HypERC20ETH->>HypERC20ETH: transfers to router (transferFrom)
+
+    HypERC20ETH->>HypERC20ETH: emit SentTransferRemote
+    HypERC20ETH->>MailboxETH: call dispatch
+    MailboxETH->>MailboxETH: emits Dispatch and DispatchID
+    MailboxETH->>MailboxETH: perform checks (igp)
+    Relayer->>MailboxETH: listen for events
+    Relayer->>MailboxKDA: call process
+
+    MailboxKDA->>MailboxKDA: checks PROCESS-MLC (ism)
+    MailboxKDA->>MailboxKDA: emits PROCESS and PROCESS-ID 
+
+    MailboxKDA->>HypERC20: call handle
+
+    HypERC20->>HypERC20: call transfer (crexate-to) to recepient
+    HypERC20->>HypERC20: emits RECEIVED_TRANSFER_REMOTE
 ```
 
-**from ETH to KDA**
-
+### ERC20Collateral => ERC20Collateral
 ```mermaid
 sequenceDiagram
-    participant U as User
-    participant MEVM as Mailbox on EVM
-    participant EVM as HypERC20Collateral
-    participant BE as Backend Service
-    participant MKDA as Mailbox on KDA
-    participant KDA as hyp-erc20
+    participant User
+    participant HypERC20ETH as HypERC20Collateral
+    participant MailboxETH as MailboxEVM
+    participant Relayer
+    participant MailboxKDA as MailboxKDA
+    participant HypERC20KDA as HypERC20Collateral
 
-    U->>MEVM: call dispatch on EVM
-    MEVM->>EVM: burn HypERC20 from User
-    EVM->>BE: send the data
-    BE->>MKDA: call process on KDA
-    MKDA->>KDA: send hyp-erc20-collateral from Treasury to User
+    User->>HypERC20ETH: call transferRemote
+    HypERC20ETH->>HypERC20ETH: transfers to router (transferFrom)
+
+    HypERC20ETH->>HypERC20ETH: emit SentTransferRemote
+    HypERC20ETH->>MailboxETH: call dispatch
+    MailboxETH->>MailboxETH: emits Dispatch and DispatchID
+    MailboxETH->>MailboxETH: perform checks (igp)
+    Relayer->>MailboxETH: listen for events
+    Relayer->>MailboxKDA: call process
+
+    MailboxKDA->>MailboxKDA: checks PROCESS-MLC (ism)
+    MailboxKDA->>MailboxKDA: emits PROCESS and PROCESS-ID 
+
+    MailboxKDA->>HypERC20KDA: call handle
+
+    HypERC20KDA->>HypERC20KDA: emits RECEIVED_TRANSFER_REMOTE
+
+    HypERC20KDA->>HypERC20KDA: call transfers to recepient
 ```
+
+## From KDA to ETH
+
+### HypERC20 => ETH 
+```mermaid
+sequenceDiagram
+    participant User
+    participant MailboxKDA as MailboxKDA
+    participant HypERC20KDA as HypERC20
+    participant Relayer
+    participant MailboxETH as MailboxEVM
+    participant HypNative as HypNative
+
+    User->>MailboxKDA: call dispatch
+    MailboxKDA->>HypERC20KDA: call transfer-remote
+    HypERC20KDA->>HypERC20KDA: burn tokens
+    HypERC20KDA->>HypERC20KDA: transfers to IGP (gas amount from quote-gas-payment)
+    HypERC20KDA->>HypERC20KDA: emit SENT_TRANSFER_REMOTE
+
+    MailboxKDA->>MailboxKDA: emits DISPATCH, DISPATCH-ID
+    Relayer->>MailboxKDA: listen for events
+    Relayer->>MailboxETH: call process
+    MailboxETH->>MailboxETH: emits Process, ProcessID
+    MailboxETH->>MailboxETH: checks recipientIsm -> verify (ISM)
+    MailboxETH->>HypNative: call handle
+    HypNative->>HypNative: sends ETH to recepient
+    HypNative->>HypNative: emits ReceivedTransferRemote
+```
+### HypERC20Collateral => HypERC20
+```mermaid
+sequenceDiagram
+    participant User
+    participant MailboxKDA as MailboxKDA
+    participant HypERC20KDA as HypERC20Colateral
+    participant Relayer
+    participant MailboxETH as MailboxEVM
+    participant HypERC20ETH as HypERC20
+
+    User->>MailboxKDA: call dispatch
+    MailboxKDA->>HypERC20KDA: call transfer-remote
+    HypERC20KDA->>HypERC20KDA: burn tokens
+    HypERC20KDA->>HypERC20KDA: transfers to IGP (gas amount from quote-gas-payment)
+    HypERC20KDA->>HypERC20KDA: emit SENT_TRANSFER_REMOTE
+
+    MailboxKDA->>MailboxKDA: emits DISPATCH, DISPATCH-ID
+    Relayer->>MailboxKDA: listen for events
+    Relayer->>MailboxETH: call process
+    MailboxETH->>MailboxETH: emits Process, ProcessID
+    MailboxETH->>MailboxETH: checks recipientIsm -> verify (ISM)
+    MailboxETH->>HypERC20ETH: call handle
+    HypERC20ETH->>HypERC20ETH: mints to recepient
+    HypERC20ETH->>HypERC20ETH: emits ReceivedTransferRemote
+```
+### HypERC20 => HypERC20Collateral 
+```mermaid
+sequenceDiagram
+    participant User
+    participant MailboxKDA as MailboxKDA
+    participant HypERC20KDA as HypERC20KDA
+    participant Relayer
+    participant MailboxETH as MailboxEVM
+    participant HypERC20ETH as HypERC20Collateral
+
+    User->>MailboxKDA: call dispatch
+    MailboxKDA->>HypERC20KDA: call transfer-remote
+    HypERC20KDA->>HypERC20KDA: burns tokens
+    HypERC20KDA->>HypERC20KDA: transfers to IGP (gas amount from quote-gas-payment)
+    HypERC20KDA->>HypERC20KDA: emit SENT_TRANSFER_REMOTE
+
+    MailboxKDA->>MailboxKDA: emits DISPATCH, DISPATCH-ID
+    Relayer->>MailboxKDA: listen for events
+    Relayer->>MailboxETH: call process
+    MailboxETH->>MailboxETH: emits Process, ProcessID
+    MailboxETH->>MailboxETH: checks recipientIsm -> verify (ISM)
+    MailboxETH->>HypERC20ETH: call handle
+    HypERC20ETH->>HypERC20ETH: transfers token to recepient
+    HypERC20ETH->>HypERC20ETH: emits ReceivedTransferRemote
+```
+
+### HypERC20Collateral => HypERC20Collateral 
+```mermaid
+sequenceDiagram
+    participant User
+    participant MailboxKDA as MailboxKDA
+    participant HypERC20KDA as HypERC20Collateral
+    participant Relayer
+    participant MailboxETH as MailboxEVM
+    participant HypERC20ETH as HypERC20Collateral
+
+    User->>MailboxKDA: call dispatch
+    MailboxKDA->>HypERC20KDA: call transfer-remote
+    HypERC20KDA->>HypERC20KDA: call transfers to router (amount)
+    HypERC20KDA->>HypERC20KDA: transfers to IGP (gas amount from quote-gas-payment)
+    HypERC20KDA->>HypERC20KDA: emit SENT_TRANSFER_REMOTE
+
+    MailboxKDA->>MailboxKDA: emits DISPATCH, DISPATCH-ID
+    Relayer->>MailboxKDA: listen for events
+    Relayer->>MailboxETH: call process
+    MailboxETH->>MailboxETH: emits Process, ProcessID
+    MailboxETH->>MailboxETH: checks recipientIsm -> verify (ISM)
+    MailboxETH->>HypERC20ETH: call handle
+    HypERC20ETH->>HypERC20ETH: transfers token to recepient
+    HypERC20ETH->>HypERC20ETH: emits ReceivedTransferRemote
+```
+
